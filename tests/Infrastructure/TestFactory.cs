@@ -3,7 +3,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Infrastructure
@@ -35,6 +38,19 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Infrastructure
             var request = new DefaultHttpRequest(new DefaultHttpContext())
             {
                 Query = new QueryCollection(CreateDictionary(queryStringKey, queryStringValue))
+            };
+            return request;
+        }
+
+        public static DefaultHttpRequest CreateHttpRequest(object postContent)
+        {
+            var jsonBody = JsonConvert.SerializeObject(postContent);
+            MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(jsonBody));
+
+            var request = new DefaultHttpRequest(new DefaultHttpContext())
+            {
+                Method = "POST",
+                Body = ms
             };
             return request;
         }

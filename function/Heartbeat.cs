@@ -7,17 +7,27 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
-    public static class Heartbeat
+    public class Heartbeat
     {
+        private IUserStore _userStore;
+
+        public Heartbeat(IUserStore userStore)
+        {
+            _userStore = userStore;
+        }
+
         [FunctionName("Heartbeat")]
-        public static async Task<IActionResult> Run(
+        public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = "heartbeat")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("Heartbeat request");
+
+            var userStorageAvailability = _userStore.CheckAvailability();
 
             return (ActionResult)new OkObjectResult(
                 new
@@ -25,7 +35,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     Status = "OK",
                     Dependencies = new
                     {
-                        Storage = "Unknown",
+                        UserStorage = userStorageAvailability,
                         Table = "Unknown",
                         Logger = "Unknown"
                     }
