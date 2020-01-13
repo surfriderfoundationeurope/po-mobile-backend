@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 {
-    interface IUserStore
+    public interface IUserStore
     {
         Task<string> Save(dynamic userData);
         Task<User> GetFromId(string userId);
+        bool CheckAvailability();
+        Task<Tuple<string,string>> GetUserPasswordHash(string userEmail);
     }
 
     public class InMemoryUserStore : IUserStore
@@ -32,6 +35,18 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             {
                 return null;
             }
+        }
+
+        public bool CheckAvailability()
+        {
+            return true;
+        }
+
+        public Task<Tuple<string, string>> GetUserPasswordHash(string userEmail)
+        {
+
+            var user = _itemsDictionary.First(u => u.Value.email == userEmail);
+            return Task.FromResult(new Tuple<string, string>(user.Key, user.Value.passwordHash));
         }
     }
 

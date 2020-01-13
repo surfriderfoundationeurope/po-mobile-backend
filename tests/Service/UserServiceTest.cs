@@ -56,11 +56,69 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             Assert.Equal(registeredUser.LastName, user.LastName);
         }
 
+        [Fact]
+        public async void login_with_correctAccount_ShouldReturnTrue()
+        {
+            IUserService service = GetServiceTestInstance();
+            var newUserLastName = "nom";
+            var newUserFirstName = "prenom";
+            var newUserBirthYear = 1990;
+            var newUserEmail = "nom.prenom@gmail.com";
+            var newUserPassword = "Compl3xp@ssw0rd";
+            var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
 
+            bool areCorrect = await service.CheckUserCredentials(newUserEmail, newUserPassword);
 
+            Assert.True(areCorrect);
+        }
 
+        [Fact]
+        public async void login_with_incorrectAccount_ShouldReturnFalse()
+        {
+            IUserService service = GetServiceTestInstance();
+            var newUserLastName = "nom";
+            var newUserFirstName = "prenom";
+            var newUserBirthYear = 1990;
+            var newUserEmail = "nom.prenom@gmail.com";
+            var newUserPassword = "Compl3xp@ssw0rd";
+            var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
 
+            bool areCorrect = await service.CheckUserCredentials("demouser123@gmail.com", newUserPassword);
 
+            Assert.False(areCorrect);
+        }
+
+        [Fact]
+        public async void login_with_incorrectPassword_ShouldReturnFalse()
+        {
+            IUserService service = GetServiceTestInstance();
+            var newUserLastName = "nom";
+            var newUserFirstName = "prenom";
+            var newUserBirthYear = 1990;
+            var newUserEmail = "nom.prenom@gmail.com";
+            var newUserPassword = "Compl3xp@ssw0rd";
+            var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
+
+            bool areCorrect = await service.CheckUserCredentials(newUserEmail, "UnPassQuiNexistePas");
+
+            Assert.False(areCorrect);
+        }
+
+        [Fact]
+        public async void generate_token_should_return_token()
+        {
+            IUserService service = GetServiceTestInstance();
+            var newUserLastName = "nom";
+            var newUserFirstName = "prenom";
+            var newUserBirthYear = 1990;
+            var newUserEmail = "nom.prenom@gmail.com";
+            var newUserPassword = "Compl3xp@ssw0rd";
+            var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
+
+            var token = await service.GenerateTokenFromPassword(newUserEmail, newUserPassword, DateTime.UtcNow.AddDays(1));
+            
+            Assert.NotNull(token);
+        }
 
         private UserService GetServiceTestInstance()
         {
