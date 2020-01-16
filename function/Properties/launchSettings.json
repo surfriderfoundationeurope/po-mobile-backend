@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Surfrider.PlasticOrigins.Backend.Mobile": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 31752,
+      "useSSL": false
+    }
+  }
+}
