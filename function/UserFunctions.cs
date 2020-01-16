@@ -29,14 +29,23 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Register request");
 
-            var registerVM = JsonConvert.DeserializeObject<RegisterViewModel>(await req.ReadAsStringAsync());
+            var registerVm = JsonConvert.DeserializeObject<RegisterViewModel>(await req.ReadAsStringAsync());
 
-            _userService.Register(registerVM.LastName, registerVM.FirstName, registerVM.BirthYear, registerVM.Email, registerVM.Password)
+            var result = await _userService.Register(
+                registerVm.LastName, 
+                registerVm.FirstName, 
+                registerVm.BirthYear,
+                registerVm.Email, 
+                registerVm.Password
+                );
+            
             
             return (ActionResult)new OkObjectResult(
                 new
                 {
-                    Id = "qsjdqisjdjhgfquih"
+                    Id = result.Id,
+                    Token = result.AuthToken,
+                    Expires = result.AuthTokenExpiration
                 });
         }
 
@@ -57,7 +66,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             var validityDate = DateTime.Now.AddHours(2048);
 
-            var token = _userService.GenerateTokenFromPassword(loginRequest.Email, loginRequest.Password, validityDate);
+            var token = await _userService.GenerateTokenFromPassword(loginRequest.Email, loginRequest.Password);
 
             return (ActionResult)new OkObjectResult(
                 new

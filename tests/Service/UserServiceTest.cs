@@ -24,7 +24,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
 
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
 
@@ -34,6 +34,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             Assert.Equal(newUserLastName, user.LastName);
             Assert.Equal(newUserFirstName, user.FirstName);
             Assert.Equal(newUserBirthYear, user.BirthYear);
+            Assert.NotNull(user.AuthToken);
         }
 
         [Fact]
@@ -43,7 +44,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
 
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
 
@@ -62,7 +63,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             IUserService service = GetServiceTestInstance();
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
             var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
@@ -78,7 +79,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             IUserService service = GetServiceTestInstance();
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
             var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
@@ -94,7 +95,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             IUserService service = GetServiceTestInstance();
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
             var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
@@ -110,12 +111,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             IUserService service = GetServiceTestInstance();
             var newUserLastName = "nom";
             var newUserFirstName = "prenom";
-            var newUserBirthYear = 1990;
+            var newUserBirthYear = "1990";
             var newUserEmail = "nom.prenom@gmail.com";
             var newUserPassword = "Compl3xp@ssw0rd";
             var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
 
-            var token = await service.GenerateTokenFromPassword(newUserEmail, newUserPassword, DateTime.UtcNow.AddDays(1));
+            var token = await service.GenerateTokenFromPassword(newUserEmail, newUserPassword);
             
             Assert.NotNull(token);
         }
