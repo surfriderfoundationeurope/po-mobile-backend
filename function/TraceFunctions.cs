@@ -15,9 +15,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
     {
         [FunctionName("UploadTracefile")]
         public static async Task<IActionResult> RunUploadTraceAttachment(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/file")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
             [Blob("trace-attachments", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
+            string traceId,
+            string fileName,
             ILogger log
         )
         {
@@ -26,15 +28,15 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
             
-            string name = $"{Guid.NewGuid():N}/test.txt";
+            string name = $"{accessTokenResult.User.Id}/{traceId}/{fileName}";
 
             var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
 
-            traceAttachmentBlob.Properties.ContentType = req.ContentType ?? "application/json";
+            traceAttachmentBlob.Properties.ContentType = req.ContentType;
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
             await traceAttachmentBlob.UploadFromStreamAsync(req.Body);
-            
-            return (ActionResult)new OkObjectResult($"File uploaded!");
+
+            return new StatusCodeResult(200);
         }
 
         [FunctionName("UploadTrace")]
@@ -49,7 +51,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
 
-            string name = $"{DateTime.UtcNow.Year}/{DateTime.Now.Month}/{DateTime.UtcNow.Day}/{Guid.NewGuid():N}";
+            string traceId = Guid.NewGuid().ToString("N");
+
+            string name = $"{DateTime.UtcNow.Year}/{DateTime.Now.Month}/{DateTime.UtcNow.Day}/{traceId}.json";
 
             var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
 
@@ -57,7 +61,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
             await traceAttachmentBlob.UploadFromStreamAsync(req.Body);
 
-            return (ActionResult)new OkObjectResult($"File uploaded!");
+            return new OkObjectResult(new
+            {
+                traceId = traceId
+            });
         }
     }
 }
