@@ -41,6 +41,20 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Infrastructure
             };
             return request;
         }
+        
+        public static DefaultHttpRequest CreateHttpRequest()
+        {
+            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            return request;
+        }
+
+
+        public static DefaultHttpRequest CreateHttpRequest(TestUserToken testUser)
+        {
+            var request = new DefaultHttpRequest(new DefaultHttpContext());
+            request.Headers.Add("Authorization", new StringValues($"Bearer {testUser.Token}"));
+            return request;
+        }
 
         public static DefaultHttpRequest CreateHttpRequest(object postContent)
         {
