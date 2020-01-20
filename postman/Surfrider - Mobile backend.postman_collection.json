@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "0d9d75fc-c204-41e6-a9eb-e2b8a8c318d5",
+		"name": "Surfrider - Mobile backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Heartbeat",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62b0c8a0-4437-4eeb-980e-0e36f78271c4",
+						"exec": [
+							"pm.test(\"Status code is 200\", function(){",
+							"   pm.response.to.have.status(200) ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ENDPOINT}}/heartbeat",
+					"host": [
+						"{{ENDPOINT}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"coucouNew753.0&@\"\n}"
+				},
+				"url": {
+					"raw": "{{ENDPOINT}}/login",
+					"host": [
+						"{{ENDPOINT}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstname\": \"Christopher\",\n\t\"lastname\": \"Maneu\",\n\t\"email\": \"chris@maneu.domain\",\n\t\"birthyear\": 1980,\n\t\"password\": \"coucouNew753.0&@\"\n}"
+				},
+				"url": {
+					"raw": "{{ENDPOINT}}/register",
+					"host": [
+						"{{ENDPOINT}}"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post File",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiI3MTliNDVjYjFiZDE0MDc2ODhlYWRjODI0N2NmNzBiMCIsImV4cCI6MTU3OTM3MzM3MX0.wYIDe_HKLJ9hmIUNA5Joctz2XWSueL0myJUNMcrlpnJj3Td9uMZShxYuD-vSBtnOKaLY85jVwlBThNw4qeEgMQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "Coucou à tous\nDemo"
+				},
+				"url": {
+					"raw": "{{ENDPOINT}}/trace/file",
+					"host": [
+						"{{ENDPOINT}}"
+					],
+					"path": [
+						"trace",
+						"file"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "e9e600a8-3516-4a53-b315-a4446353afc0",
+			"key": "ENDPOINT",
+			"value": "http://127.0.0.1:51582",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
