@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
+using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
@@ -16,10 +17,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
     public class UserFunctions
     {
         private IUserService _userService;
+        private IConfigurationService _configurationService;
 
-        public UserFunctions(IUserService userService)
+        public UserFunctions(IUserService userService, IConfigurationService configurationService)
         {
             _userService = userService;
+            _configurationService = configurationService;
         }
 
         [FunctionName("Register")]
@@ -76,5 +79,28 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     Expires = validityDate
                 });
         }
+
+        [FunctionName("RefreshToken")]
+        public async Task<IActionResult> RunRefreshToken(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refreshtoken")]
+            HttpRequest req,
+            [AccessToken] AccessTokenResult accessTokenResult,
+            ILogger log)
+        {
+            log.LogInformation("#auth #refreshtoken");
+
+            if (accessTokenResult.Status != AccessTokenStatus.Valid)
+                return new UnauthorizedResult();
+
+            JwtTokenContent rawToken = await AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+
+            var newToken = await _userService.RefreshToken(rawToken);
+            return (ActionResult)new OkObjectResult(
+                new
+                {
+                    Token = newToken
+                });
+        }
+
     }
 }

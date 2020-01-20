@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Jose;
+using Newtonsoft.Json;
 
 [assembly: InternalsVisibleTo("Surfrider.PlasticOrigins.Backend.Mobile.Tests")]
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
@@ -14,17 +15,20 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<User> GetUserFromId(string registeredUserId);
         Task<bool> CheckUserCredentials(string email, string password);
         Task<string> GenerateTokenFromPassword(string email, string password);
+        Task<string> RefreshToken(JwtTokenContent token);
     }
 
     internal class UserService : IUserService
     {
         private readonly IUserStore _userStore;
         private readonly int _defaultTokenValidityPeriod;
+        private readonly string _jwtTokenKey;
 
-        public UserService(IUserStore userStore)
+        public UserService(IUserStore userStore, IConfigurationService configurationService)
         {
             _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
             _defaultTokenValidityPeriod = 60 * 48;
+            _jwtTokenKey = configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey);
         }
 
         public async Task<User> Register(string lastName, string firstName, string birthYear, string email,
@@ -94,22 +98,49 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             return token;
         }
 
-        private static string GenerateUserToken(string email, DateTime validityDate, string userId)
+        public async Task<string> RefreshToken(JwtTokenContent token)
         {
-            var payload = new Dictionary<string, object>()
+            var newToken = GenerateUserToken(token.Email, DateTime.UtcNow.AddMinutes(_defaultTokenValidityPeriod), token.UserId);
+            return newToken;
+        }
+
+        private string GenerateUserToken(string email, DateTime validityDate, string userId)
+        {
+            return InternalGenerateUserToken(email, validityDate, userId, _jwtTokenKey); ;
+        }
+
+        internal static string InternalGenerateUserToken(string email, DateTime validityDate, string userId, string signatureKey)
+        {
+            var payload = new JwtTokenContent()
             {
-                {"sub", email},
-                {"exp", Utilities.DateToEpochDate(validityDate)},
-                {"uid", userId}
+                Email = email,
+                ExpiresAt = validityDate,
+                UserId = userId
             };
 
-            // TODO : Push this private key elsewhere
-            var privateKey = Encoding.UTF8.GetBytes(
-                "24ba53e4c45253154dd5421decbb2e2242c31134b4dbc5bbedcc1d4bce1b3da3c33354e14c331b54c3cce24b23211de4acdbb15c5c3e3bbd3adebaea45142dc1c4caeaca54aae4ee4dc2e15cac51bb5cbadbd54c42e2b1abaed2dbd3dd3aaebc3abce4b2be42ebbd13b1b14e3c5bcda24432e33de1b44225d5232a4ca2a1da35c31e5e53db2d5bc413c4ced32e4354e51ccccebaa1cabcaa3bbaa53a3b55a1c53c5341c42e1522a2dd53e5d353c3442eecdedebd1bb125aa251e32d5b2d1e5cdad34a42d44a4dcb345d23aa1e4ba5cb51545ada5dcacca2d3ebcb1b2534a234e5da3db31eac215534155354a453d2bb42334cdad1cd51e43bb1edca25abe2ab2");
+            var privateKey = Encoding.UTF8.GetBytes(signatureKey);
             string token = Jose.JWT.Encode(payload, privateKey, JwsAlgorithm.HS512);
 
-            string json = Jose.JWT.Decode(token, privateKey);
             return token;
         }
+    }
+
+    public class JwtTokenContent
+    {
+        [JsonProperty("sub")]
+        public string Email { get; set; }
+        [JsonProperty("uid")]
+        public string UserId { get; set; }
+
+        [JsonIgnore]
+        public DateTime ExpiresAt 
+        {
+            get => Utilities.ToDateTime(EpochExpiration, DateTimeKind.Utc);
+            set => EpochExpiration = Utilities.ToEpochTime(value);
+        }
+        
+        [JsonProperty("exp")]
+        public long EpochExpiration { get; set; }
+
     }
 }
