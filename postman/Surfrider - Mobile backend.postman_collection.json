@@ -6,6 +6,165 @@
 	},
 	"item": [
 		{
+			"name": "Auth & Account",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"coucouNew753.0&@\"\n}"
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/login",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"firstname\": \"Christopher\",\n\t\"lastname\": \"Maneu\",\n\t\"email\": \"chris@maneu.domain\",\n\t\"birthyear\": 1980,\n\t\"password\": \"coucouNew753.0&@\"\n}"
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/register",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiIyODI5NDQ2MTM2MTM0ODBlOTUzMmY2NTRjMjUxOTdhMCIsImV4cCI6MTU3OTcwNTY4Mn0.s_iLp_I0zEDLHwNVeVwWYQcAzFlrcSnzkt90OptsgDB5leA29adXPemnXtdxHAhKPK9bsucLcGP4LpWrYPrSpA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{ENDPOINT}}/auth/refreshtoken",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"auth",
+								"refreshtoken"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Campaigns",
+			"item": [
+				{
+					"name": "Post File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiJhM2Y5YWRkNGZiYWU0NDMyOWU0Y2M1NzJjMjM1MDM1OCIsImV4cCI6MTU3OTcwNjkxM30.tG2JZwBkj3eIyQByfi8H0W_bI5ZP8b2YZGLIVG52AoUdJV_d4EyTJXJI3l6rz77OdMsom_jelCLbdUd4nvMgxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "Test01"
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/trace/05ebed05977240a29b2aff8c143cb110/file/demo.txt",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"trace",
+								"05ebed05977240a29b2aff8c143cb110",
+								"file",
+								"demo.txt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Campaign",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiI0YjEzOTkyMDI3OWU0NmI5YWIyMzRjNjQwYjYxMDYwZCIsImV4cCI6MTU3OTcwNzEwMX0.yTC5aAH9VGPGsoDWWtKFqJCKl6p-MNNSefnrrnSUv4ApnvZQKsbxkHct2fkeg-cf3vtOXEdgsjgIVB96dMnEHw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{json\n,\ndata\n123}"
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/trace",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"trace"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
 			"name": "Heartbeat",
 			"event": [
 				{
@@ -35,97 +194,11 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Login",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"coucouNew753.0&@\"\n}"
-				},
-				"url": {
-					"raw": "{{ENDPOINT}}/login",
-					"host": [
-						"{{ENDPOINT}}"
-					],
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Register",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"firstname\": \"Christopher\",\n\t\"lastname\": \"Maneu\",\n\t\"email\": \"chris@maneu.domain\",\n\t\"birthyear\": 1980,\n\t\"password\": \"coucouNew753.0&@\"\n}"
-				},
-				"url": {
-					"raw": "{{ENDPOINT}}/register",
-					"host": [
-						"{{ENDPOINT}}"
-					],
-					"path": [
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Post File",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiI3MTliNDVjYjFiZDE0MDc2ODhlYWRjODI0N2NmNzBiMCIsImV4cCI6MTU3OTM3MzM3MX0.wYIDe_HKLJ9hmIUNA5Joctz2XWSueL0myJUNMcrlpnJj3Td9uMZShxYuD-vSBtnOKaLY85jVwlBThNw4qeEgMQ",
-							"type": "string"
-						}
-					]
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "Coucou à tous\nDemo"
-				},
-				"url": {
-					"raw": "{{ENDPOINT}}/trace/file",
-					"host": [
-						"{{ENDPOINT}}"
-					],
-					"path": [
-						"trace",
-						"file"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"variable": [
 		{
-			"id": "e9e600a8-3516-4a53-b315-a4446353afc0",
+			"id": "14b6f2f8-7af6-435a-b9ad-723fdbd4c767",
 			"key": "ENDPOINT",
 			"value": "http://127.0.0.1:51582",
 			"type": "string"
