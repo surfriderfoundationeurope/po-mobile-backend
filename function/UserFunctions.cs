@@ -68,7 +68,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 return new UnauthorizedResult();
 
             var validityDate = DateTime.Now.AddHours(2048);
-
             var token = await _userService.GenerateTokenFromPassword(loginRequest.Email, loginRequest.Password);
 
             return (ActionResult)new OkObjectResult(
@@ -128,5 +127,21 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     Success = true
                 });
         }
+
+        [FunctionName("ResetAccount")]
+        public async Task<IActionResult> RunResetAccount(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/reset")] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation($"#auth #reset");
+            // Todo: implement
+            
+            return (ActionResult)new OkObjectResult(
+                new
+                {
+                    Success = true
+                });
+        }
+
     }
 }
