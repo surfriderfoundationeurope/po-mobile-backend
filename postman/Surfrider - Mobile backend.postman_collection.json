@@ -133,6 +133,17 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Reset password",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"response": []
 				}
 			],
 			"protocolProfileBehavior": {}
@@ -242,7 +253,7 @@
 	],
 	"variable": [
 		{
-			"id": "c015ea18-a030-4b75-b8ef-dcb66d396fd0",
+			"id": "70e1bffd-e5c4-481d-847a-59dbbb64857e",
 			"key": "ENDPOINT",
 			"value": "http://127.0.0.1:51582",
 			"type": "string"
