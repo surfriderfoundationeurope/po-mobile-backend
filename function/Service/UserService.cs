@@ -16,6 +16,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<bool> CheckUserCredentials(string email, string password);
         Task<string> GenerateTokenFromPassword(string email, string password);
         Task<string> RefreshToken(JwtTokenContent token);
+        Task<bool> UpdatePassword(JwtTokenContent token, string password);
     }
 
     internal class UserService : IUserService
@@ -102,6 +103,21 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         {
             var newToken = GenerateUserToken(token.Email, DateTime.UtcNow.AddMinutes(_defaultTokenValidityPeriod), token.UserId);
             return newToken;
+        }
+
+        public async Task<bool> UpdatePassword(JwtTokenContent token, string password)
+        {
+
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            try
+            {
+                await _userStore.UpdatePassword(token.UserId, passwordHash);
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }            
         }
 
         private string GenerateUserToken(string email, DateTime validityDate, string userId)

@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"coucouNew753.0&@\"\n}"
+							"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"test-123456\"\n}"
 						},
 						"url": {
 							"raw": "{{ENDPOINT}}/login",
@@ -85,6 +85,50 @@
 							"path": [
 								"auth",
 								"refreshtoken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiJhN2Y4OTQyMzFiMmE0MzlkOTNlMmNhZWMzNDAyNzRjYiIsImV4cCI6MTU4MDQ5NjgwNX0.Fuiv53muMT9dPmIh1_Iw7f57fETHKd8Kf2W2iBVK2FsKsB-k_EiRS-E8Imf98c-5iQiVczslBVoeLXfzxTFd9w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"password\": \"test-123456\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{ENDPOINT}}/auth/updatepassword",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"auth",
+								"updatepassword"
 							]
 						}
 					},
@@ -198,7 +242,7 @@
 	],
 	"variable": [
 		{
-			"id": "14b6f2f8-7af6-435a-b9ad-723fdbd4c767",
+			"id": "c015ea18-a030-4b75-b8ef-dcb66d396fd0",
 			"key": "ENDPOINT",
 			"value": "http://127.0.0.1:51582",
 			"type": "string"

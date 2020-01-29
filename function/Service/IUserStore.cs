@@ -11,6 +11,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<User> GetFromId(string userId);
         bool CheckAvailability();
         Task<Tuple<string,string>> GetUserPasswordHash(string userEmail);
+        Task<bool> UpdatePassword(string userId, string passwordHash);
     }
 
     public class InMemoryUserStore : IUserStore
@@ -47,6 +48,20 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
             var user = _itemsDictionary.First(u => u.Value.email == userEmail);
             return Task.FromResult(new Tuple<string, string>(user.Key, user.Value.passwordHash));
+        }
+
+        public Task<bool> UpdatePassword(string userId, string passwordHash)
+        {
+            var user = _itemsDictionary.First(u => u.Key == userId);
+            _itemsDictionary[userId] = new
+            {
+                lastName = user.Value.lastName,
+                firstName = user.Value.firstName,
+                birthYear = user.Value.birthYear,
+                email = user.Value.email,
+                passwordHash
+            };
+            return Task.FromResult(true);
         }
     }
 
