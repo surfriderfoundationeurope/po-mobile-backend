@@ -102,5 +102,31 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 });
         }
 
+
+        [FunctionName("UpdatePassword")]
+        public async Task<IActionResult> RunUpdatePassword(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/updatepassword")]
+            HttpRequest req,
+            [AccessToken] AccessTokenResult accessTokenResult,
+            ILogger log)
+        {
+            log.LogInformation("#auth #updatepassword");
+
+            if (accessTokenResult.Status != AccessTokenStatus.Valid)
+                return new UnauthorizedResult();
+
+
+            var updatePasswordViewModel = JsonConvert.DeserializeObject<UpdatePasswordViewModel>(await req.ReadAsStringAsync());
+
+            JwtTokenContent rawToken = await AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+
+            await _userService.UpdatePassword(rawToken, updatePasswordViewModel.Password);
+
+            return (ActionResult)new OkObjectResult(
+                new
+                {
+                    Success = true
+                });
+        }
     }
 }

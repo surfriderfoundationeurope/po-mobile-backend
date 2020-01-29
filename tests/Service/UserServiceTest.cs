@@ -122,6 +122,23 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Service
             Assert.NotNull(token);
         }
 
+        [Fact]
+        public async void update_password_should_accept_new_password()
+        {
+            IUserService service = GetServiceTestInstance();
+            var newUserLastName = "nom";
+            var newUserFirstName = "prenom";
+            var newUserBirthYear = "1990";
+            var newUserEmail = "nom.prenom@gmail.com";
+            var newUserPassword = "Compl3xp@ssw0rd";
+            var registeredUser = await service.Register(newUserLastName, newUserFirstName, newUserBirthYear, newUserEmail, newUserPassword);
+            var newPassword = "coucou123";
+
+            var result = await service.UpdatePassword(new JwtTokenContent() { UserId = registeredUser.Id }, newPassword);
+
+            Assert.True(result);
+        }
+
         private UserService GetServiceTestInstance()
         {
             var settings = new InMemoryConfigurationService();
