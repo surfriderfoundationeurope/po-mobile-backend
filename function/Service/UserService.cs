@@ -44,10 +44,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
             // Hash password
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
-            
+
             // Save to store
-            string userId = await _userStore.Save(new { lastName, firstName, birthYear, email, passwordHash});
-            User user = new User(userId, lastName, firstName, birthYear);
+            string userId = await _userStore.Create(new User(null, lastName, firstName, birthYear, passwordHash, email));
+            User user = new User(userId, lastName, firstName, birthYear, passwordHash, email);
 
             DateTime tokenValidityDate = DateTime.UtcNow.AddMinutes(_defaultTokenValidityPeriod);
             string token = GenerateUserToken(email, tokenValidityDate, userId);
@@ -117,7 +117,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             catch (Exception e)
             {
                 return false;
-            }            
+            }
         }
 
         private string GenerateUserToken(string email, DateTime validityDate, string userId)
@@ -149,12 +149,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public string UserId { get; set; }
 
         [JsonIgnore]
-        public DateTime ExpiresAt 
+        public DateTime ExpiresAt
         {
             get => Utilities.ToDateTime(EpochExpiration, DateTimeKind.Utc);
             set => EpochExpiration = Utilities.ToEpochTime(value);
         }
-        
+
         [JsonProperty("exp")]
         public long EpochExpiration { get; set; }
 

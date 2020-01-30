@@ -25,7 +25,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Infrastructure
 
         public AccessTokenResult ToAccessTokenResult()
         {
-            return AccessTokenResult.Success(new User(UserId, "test", "test", "1980"));
+            return AccessTokenResult.Success(new User(UserId, "test", "test", "1980", "qskdljMOIJOifqsdf", "user@domain.tld"));
         }
     }
 }
