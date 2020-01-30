@@ -1,9 +1,6 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
-//using Microsoft.AspNetCore.Identity;
-//using Microsoft.AspNetCore.Authentication.JwtBearer;
-//using Microsoft.IdentityModel.Tokens;
 
 [assembly: FunctionsStartup(typeof(Surfrider.PlasticOrigins.Backend.Mobile.Startup))]
 namespace Surfrider.PlasticOrigins.Backend.Mobile
@@ -26,6 +23,13 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddAuthenticationCore(options =>
+                {
+                    options.DefaultAuthenticateScheme = "Bearer";
+                });
+            //services.AddJwtBearer()
+
             //services.AddAuthentication(options =>
             //    {
             //        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
