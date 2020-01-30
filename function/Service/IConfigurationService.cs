@@ -6,13 +6,14 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 {
     public interface IConfigurationService
     {
-        
+
         string GetValue(string key);
     }
 
     public class ConfigurationServiceWellKnownKeys
     {
         public const string JwtTokenSignatureKey = "JwtTokenKey";
+        public const string RedisHost = "RedisHost";
     }
 
     public class EnvironmentConfigurationService : IConfigurationService

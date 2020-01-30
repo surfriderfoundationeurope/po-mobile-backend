@@ -41,8 +41,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
                         return AccessTokenResult.NoToken();
 
                     return decodedToken.ExpiresAt < DateTime.UtcNow 
-                        ? AccessTokenResult.Expired() 
-                        : AccessTokenResult.Success(new User(decodedToken.UserId, null, null, null));
+                        ? AccessTokenResult.Expired()
+                        : AccessTokenResult.Success(new User(decodedToken.UserId, null, null, null, null, decodedToken.Email));
                 }
             }
             catch (Exception ex)
