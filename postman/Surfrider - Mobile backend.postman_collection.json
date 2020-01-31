@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"test-123456\"\n}"
+							"raw": "{\n\temail: \"chris@maneu.domain\",\n\tpassword: \"helloPassword123456\"\n}"
 						},
 						"url": {
 							"raw": "{{ENDPOINT}}/login",
@@ -48,7 +48,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"firstname\": \"Christopher\",\n\t\"lastname\": \"Maneu\",\n\t\"email\": \"chris@maneu.domain\",\n\t\"birthyear\": 1980,\n\t\"password\": \"coucouNew753.0&@\"\n}"
+							"raw": "{\n\t\"firstname\": \"Christopher\",\n\t\"lastname\": \"Maneu\",\n\t\"email\": \"chris@maneu.domain\",\n\t\"birthyear\": 1980,\n\t\"password\": \"helloPassword123456\"\n}"
 						},
 						"url": {
 							"raw": "{{ENDPOINT}}/register",
@@ -70,7 +70,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiIyODI5NDQ2MTM2MTM0ODBlOTUzMmY2NTRjMjUxOTdhMCIsImV4cCI6MTU3OTcwNTY4Mn0.s_iLp_I0zEDLHwNVeVwWYQcAzFlrcSnzkt90OptsgDB5leA29adXPemnXtdxHAhKPK9bsucLcGP4LpWrYPrSpA",
+									"value": "{{AUTH_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -98,7 +98,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiJhN2Y4OTQyMzFiMmE0MzlkOTNlMmNhZWMzNDAyNzRjYiIsImV4cCI6MTU4MDQ5NjgwNX0.Fuiv53muMT9dPmIh1_Iw7f57fETHKd8Kf2W2iBVK2FsKsB-k_EiRS-E8Imf98c-5iQiVczslBVoeLXfzxTFd9w",
+									"value": "{{AUTH_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -137,10 +137,33 @@
 				{
 					"name": "Reset password",
 					"request": {
-						"method": "GET",
-						"header": [],
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"user@domain.tld\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": ""
+							"raw": "{{ENDPOINT}}/auth/reset",
+							"host": [
+								"{{ENDPOINT}}"
+							],
+							"path": [
+								"auth",
+								"reset"
+							]
 						}
 					},
 					"response": []
@@ -159,7 +182,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiJhM2Y5YWRkNGZiYWU0NDMyOWU0Y2M1NzJjMjM1MDM1OCIsImV4cCI6MTU3OTcwNjkxM30.tG2JZwBkj3eIyQByfi8H0W_bI5ZP8b2YZGLIVG52AoUdJV_d4EyTJXJI3l6rz77OdMsom_jelCLbdUd4nvMgxg",
+									"value": "{{AUTH_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -171,14 +194,14 @@
 							"raw": "Test01"
 						},
 						"url": {
-							"raw": "{{ENDPOINT}}/trace/05ebed05977240a29b2aff8c143cb110/file/demo.txt",
+							"raw": "{{ENDPOINT}}/trace/05ebed05977240a29b2aff8c143cb110/attachments/demo.txt",
 							"host": [
 								"{{ENDPOINT}}"
 							],
 							"path": [
 								"trace",
 								"05ebed05977240a29b2aff8c143cb110",
-								"file",
+								"attachments",
 								"demo.txt"
 							]
 						}
@@ -193,7 +216,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiI0YjEzOTkyMDI3OWU0NmI5YWIyMzRjNjQwYjYxMDYwZCIsImV4cCI6MTU3OTcwNzEwMX0.yTC5aAH9VGPGsoDWWtKFqJCKl6p-MNNSefnrrnSUv4ApnvZQKsbxkHct2fkeg-cf3vtOXEdgsjgIVB96dMnEHw",
+									"value": "{{AUTH_TOKEN}}",
 									"type": "string"
 								}
 							]
@@ -249,13 +272,72 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get Rivers DB",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "62b0c8a0-4437-4eeb-980e-0e36f78271c4",
+						"exec": [
+							"pm.test(\"Status code is 200\", function(){",
+							"   pm.response.to.have.status(200) ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{ENDPOINT}}/heartbeat",
+					"host": [
+						"{{ENDPOINT}}"
+					],
+					"path": [
+						"heartbeat"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "83794e9c-a7dd-46cd-b3c1-4faa47dd298c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "370d803b-1b8b-4b53-86d5-f6d85b29649a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	],
 	"variable": [
 		{
-			"id": "70e1bffd-e5c4-481d-847a-59dbbb64857e",
+			"id": "6674b804-d4a3-4e37-9fea-0e7ab2e4ee3b",
 			"key": "ENDPOINT",
 			"value": "http://127.0.0.1:51582",
+			"type": "string"
+		},
+		{
+			"id": "fcc54364-0f14-4ae5-9a5e-68dcf37a8a6d",
+			"key": "AUTH_TOKEN",
+			"value": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjaHJpc0BtYW5ldS5kb21haW4iLCJ1aWQiOiJhOWFlYjZhZDljNTY0NTE2YmU1NGY2MjI2NjI5MzljZCIsImV4cCI6MTU4MDU5NjcwNX0.ECvNhn15kR29T4tKxymhxSdGcbyBS_bgmpRG5NEBrbURWj5V9LDEc0TfQ9SVCLwqa24yCQz2SaLQtQ6VOdSklw",
 			"type": "string"
 		}
 	],
