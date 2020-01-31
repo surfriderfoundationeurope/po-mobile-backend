@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
     public class UserFunctions
     {
+
+        private const int DefaultBufferSize = 1024;
+
         private IUserService _userService;
         private IConfigurationService _configurationService;
 
@@ -32,7 +36,19 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Register request");
 
-            var registerVm = JsonConvert.DeserializeObject<RegisterViewModel>(await req.ReadAsStringAsync());
+            req.EnableBuffering();
+            string reqContent = null;
+            using (var reader = new StreamReader(
+                req.Body,
+                encoding: Encoding.UTF8,
+                detectEncodingFromByteOrderMarks: true,
+                bufferSize: DefaultBufferSize,
+                leaveOpen: true))
+            {
+                reqContent = await reader.ReadToEndAsync();
+            }
+
+            var registerVm = JsonConvert.DeserializeObject<RegisterViewModel>(reqContent);
 
             var result = await _userService.Register(
                 registerVm.LastName, 
