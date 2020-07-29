@@ -10,10 +10,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         public override void Configure(IFunctionsHostBuilder builder)
         {
 #if DEBUG
-            builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
+            builder.Services.AddSingleton<IUserStore, InMemoryUserStore>();
 #else
+            // TODO: Implement SQL User Store
             //builder.Services.AddSingleton<IUserStore, SqlUserStore>();
-            builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
+            builder.Services.AddSingleton<IUserStore, InMemoryUserStore>();
 #endif
 
             builder.Services.AddSingleton<IConfigurationService, EnvironmentConfigurationService>();

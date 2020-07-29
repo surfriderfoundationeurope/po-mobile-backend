@@ -14,7 +14,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
     {
         public const string JwtTokenSignatureKey = "JwtTokenKey";
         public const string RedisHost = "RedisHost";
-        public const string PostgresqlDbConnectionString = "PostgresqlDbConnectionString";
     }
 
     public class EnvironmentConfigurationService : IConfigurationService
