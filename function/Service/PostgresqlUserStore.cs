@@ -89,21 +89,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             }
         }
 
-        public async Task<bool> UpdatePassword(string userId, string passwordHash)
+        public Task<bool> UpdatePassword(string userId, string passwordHash)
         {
-            using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
-            {
-                await conn.OpenAsync();
-                var result = await conn.ExecuteAsync(
-                    "UPDATE campaign.\"user\"" +
-                    "SET " +
-                    "passwordhash = @hash " +
-                    "WHERE id = @id",
-                    new { id = Guid.Parse(userId), hash = passwordHash }
-                );
-
-                return true;
-            }
+            throw new NotImplementedException();
         }
     }
 }
