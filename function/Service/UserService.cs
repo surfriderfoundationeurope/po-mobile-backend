@@ -68,7 +68,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public async Task<bool> CheckUserCredentials(string email, string password)
         {
             try
-            {
+                {
                 var userHash = await _userStore.GetUserPasswordHash(email);
                 return BCrypt.Net.BCrypt.Verify(password, userHash.Item2);
             }

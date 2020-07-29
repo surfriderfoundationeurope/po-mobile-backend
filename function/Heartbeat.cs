@@ -27,7 +27,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Heartbeat request");
 
-            var userStorageAvailability = _userStore.CheckAvailability();
+            var userStorageAvailability = await _userStore.CheckAvailability();
 
             return (ActionResult)new OkObjectResult(
                 new
