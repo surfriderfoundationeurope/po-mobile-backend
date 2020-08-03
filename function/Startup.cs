@@ -18,6 +18,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             builder.Services.AddSingleton<IConfigurationService, EnvironmentConfigurationService>();
             builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton<TraceStore, TraceStore>();
+            builder.Services.AddSingleton<TraceService, TraceService>();
         }
 
         public void ConfigureServices(IServiceCollection services)
