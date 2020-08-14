@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <style type="text/css">
+        /* CLIENT-SPECIFIC STYLES */
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        /* Prevent WebKit and Windows mobile changing default text sizes */
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        /* Remove spacing between tables in Outlook 2007 and up */
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+        /* Allow smoother rendering of resized image in Internet Explorer */
+
+        /* RESET STYLES */
+        img {
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+
+        table {
+            border-collapse: collapse !important;
+        }
+
+        body {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+        }
+
+        /* iOS BLUE LINKS */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* MOBILE STYLES */
+        @media screen and (max-width: 525px) {
+
+            /* ALLOWS FOR FLUID TABLES */
+            .wrapper {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+
+            /* ADJUSTS LAYOUT OF LOGO IMAGE */
+            .logo img {
+                margin: 0 auto !important;
+            }
+
+            /* USE THESE CLASSES TO HIDE CONTENT ON MOBILE */
+            .mobile-hide {
+                display: none !important;
+            }
+
+            .img-max {
+                max-width: 100% !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            /* FULL-WIDTH TABLES */
+            .responsive-table {
+                width: 100% !important;
+            }
+
+            /* UTILITY CLASSES FOR ADJUSTING PADDING ON MOBILE */
+            .padding {
+                padding: 10px 5% 15px 5% !important;
+            }
+
+            .padding-meta {
+                padding: 30px 5% 0px 5% !important;
+                text-align: center;
+            }
+
+            .padding-copy {
+                padding: 10px 5% 10px 5% !important;
+                text-align: center;
+            }
+
+            .no-padding {
+                padding: 0 !important;
+            }
+
+            .section-padding {
+                padding: 50px 15px 50px 15px !important;
+            }
+
+            /* ADJUST BUTTONS ON MOBILE */
+            .mobile-button-container {
+                margin: 0 auto;
+                width: 100% !important;
+            }
+
+            .mobile-button {
+                padding: 15px !important;
+                border: 0 !important;
+                font-size: 16px !important;
+                display: block !important;
+            }
+        }
+
+        /* ANDROID CENTER FIX */
+        div[style*="margin: 16px 0;"] {
+            margin: 0 !important;
+        }
+    </style>
+</head>
+<body style="margin: 0 !important; padding: 0 !important;">
+
+    <!-- HIDDEN PREHEADER TEXT -->
+    <div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+        Merci de valider votre inscription
+    </div>
+
+    <!-- HEADER -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+            <td bgcolor="#ffffff" align="center">
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+                <tr>
+                <td align="center" valign="top" width="500">
+                <![endif]-->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="wrapper">
+                    <tr>
+                        <td align="center" valign="top" style="padding: 15px 0;" class="logo">
+                            <a href="https://www.plasticorigins.eu" target="_blank">
+                              <img width="68" height="68" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqoAAAKrBAMAAADL97L8AAAAMFBMVEVHcEwAc74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac74Ac75Vq/kIAAAAD3RSTlMAQMCApRDw0DBg4CBwkFBK+7wqAAAlSUlEQVR42u2dfYxcZb3Hz+7OtDM7u9uOpV6Kxa3biopyp+0WFbiyaxuqRcJspdlNG6HeviQ1ooNKE4maWbyk5hpxK7SYYMxUKAkkwCxCSkzgbqtVCORmAeMFldwWQWIwN213l5l2aPvcbQt05znP+/s5z/n9hbWd88xnvuf3/N7Oc4IgInZ7ftqCxFSgXND7uZ6eMphpEz09f+z92YUJHAHLfbh3ZQGQbGJJ72ujCShmyyxccQlgs02rDgwnwBhu+s9dCvjsvj8m7oBoP11RBiJWX/WPBB7a1goifQ/s/AQhbOl51wJZ27tsIAE5w1oOVoEKa1w3N4H5rv3Xy0Cd/eCfCdBp+821QK3t/UXCVDXThGtw01+AHnvk7/7mUMuBPlvsZ86VfqMEdFrteg/jrKcKQLdNPO/bzf8yMGE/8MoN3FkFZqzxij9C/QswZ48MJ0JN5CpmueeAaXs49i2D9WVg3uq74w31DWDHro/z3X8lsGX3x9YLZAvAnk3sjCfUp0vAptX+GkeofwO27V/jV0u5Eti3+2NWb8kUxThsOjP9k8+fp5HO589MCV0i9nFTsUq0RPapb69aRpqeuH3eio/5vWd9hTdH7ellG//L9/KSbfw+LlAf59r8G4sP8Li/9MLlXL9Z7ap4QH2CC6nIaM9PucB+KQ5QL2D/vrceEN2k0wu/wH6Zz0cf6geYSyCScyctB5kLNx/xBeomBTNS6XmX+IGVEereZxVd7yfXeoCVDeoWlaMmv1kdd6xMULc8q/iqP1kda6w/ZNmjXtRw4YtZ9q2PxzZOra3RU0zO7SrFNG5dx9BVPqzt6l0M3fFrogf1Bqpa6npbyvQGee3yyFWpqFC/r7uTlHuGijViFawWmlDqJibLnqLtWo1IPUaQo9VTDc3pUGePJiLUek0fotx5XzS2lDsonuhUdJou91D6HIcNrqWL0tv5WlSg/gtl7MmsPNKUwa5vxSFQNXj3M3qBSIStHSXnBsnII3O1/e5DzRQcbB23EJ3rxLDrUNN9DrnUGcsiDnlMuh4IXOTqSM5dpIX9KsI71RetLu2OyO5YXSWHG/GksYTaYXehkhLVhv0pctIIzZS7qesfCFBdKA9lCVhvdhXqrwnBixt3WBfhZvqkm1AJJdUJVypuLYWIudZ00X2oRKxTLkatb0YBKhHrN92DemM0oBKx/sm59B+7vdZd62Lguz8N1woCfU6HVKwB1mREgion25j4YuVHI5GpOtpyxw4rOBVeHYra1A12WumUO2t8MnoTYtjJuu85f/8/6nB57S3XfQDu/t8cuGyfdtsHDEWvuHbGcrgMe7sTQXUpItE/azZQc2Hh45HtB7dh9HDS/tLWRXiS+QlXu1iZciS7luRAoG67HvBmpEftcMOL/245o3b0x5a91exuCpjoZGkQFWvDRIUOhqrfDaJjP3IuaM2UotUERhq6Mlyz58PejLZTJbpWa02sbNSdKtG12iq3FyPvVEmu1dKGtc71sq9k1Golw0qXnS1NqCkQ1W1kMj+OyxO32NvuQVeiqpuDaNofHImu7olBUEULr4w/4ZaN0f2P9wGmo6tKpJ9eZL33TphdQypW9z/eB/TbTwCuCaJs66ynAikHbhczTs2gWJFj1Y3hiFNFDosaHMAecn6cTsi+bLXQisxVTwXRt0M289ahGBy3gw7CS/bEipTqg0EcbIc9sQ65Ut8xJJjt1q7cH8TDUrYUM+TmZJIiG7cjVpRUXX4OXMGGZUCsKKluC+JjO2yIFSXVepxeGpOz8QWHYplV0b6hbrGWHZtJ0mCIIkfdfOTxQsyodhqPHIvxKwCGrWL4fkw5NDmjMboyLNZD8Y6q3rMPGi3JZZ2aSNRnqFmHnSYdThylikwFtG0fLTFPAGaIFRFAzjX3C24P4mlDxu5KhLeJqVSRibmmHWTIH6ma+7KIny+2UjX3bVM+SRUpVh2ZwCGfpIoUq4ZMIOuXVJFiVZ8JdPslVaRYjxkIq+ItVZRYlQdXQ75JFSlW1UIqeCdVlJImdIdVsZcqUqxqg6uKh1INgg16K1cZP+qqDFu0yq896EldFbZwlW6rwk8veylVlFgV9rBT+uNhR+2Ixv2q4kFjlTVPV7ZfZTyYAcDZuLb9akNsh4BFnN8DuvKqqcAfK2r68uHTXm7xiOqQptN6uj1MVklpq5L4J13yMwPAZgI1FaJq1Zq1RSATCH3/RQo+tY8eVs0BgqbvQLE20SUdpUfrkzp+qqWeUe3UcLNuYIgs4k01HFzJh6xFhsJqzKkOKQ9ZQ4lwbdQ7qrmS6jLIPvgDjwfeUQ1H7F9XXVnd6SHVDsVV1jYmlxJ3quHNRW7hI0wlgNhTHWLxg+zZapVhr/KAami/ashkrZ1slYXYUw3vVzIPRHazYYg/1TaFhauQA8CEv/GnGqrcS7iATsZUzQOqg+pcQDdjWcEDqhllLiDkAHCH1nhANVQQFXYBnaytVR+otqpyAd2sP48PVEONpmOKHAD2c3ygyq4xzoUt9Zpqm5rFjzCPb3tBNVS+E6sFFJiLin5Q3afiIYEO9gK4H1RDQPYLrGuQvVnjB9VQlVVk7prjMzyhyqEznIWOA5nrPdUuDiQYa4c+gfTAsSdUQ7fvHu5l9XFMFjRTPZBntlFtVHPsi1jITHWD7GhQqKcwl5lq1N7G1sJMtYWp30SwFIcD8IZq6OSJfsnKygMJVYQL4K2wVHm2O2+otshNW3TwOAB/qIaiAL70apArjfCH6qBUegW75cMJVWQiwHVsUI4vN/OHaqiQxxNbtfJNFnpEdZ9EbNXN55Q9otomEVsV+AIIj6jCHQGO0nWWs5fgE9Vu4WH2ds7Wt09UU8J1K+iheOojhj5RhecCmF9CBf9D6hkLPlHllhxun1uUUJ1hswUr74O8jQSvqLYIJq19vE0vr6jCFRbGhkCO+8fwi+o+oaQ1xe04/KLaJpS0jkGzb0FCtTlEgir67zBdBfIbpxOqkFUEhi1yvHGVd1RbBRxrin9AwzOqLQKOdYxf355RhUt6LI61yP9PfKPKL7ycgLx9o5ridqxtAsUD36jmuCP6QYF8zDeqcE6/Vf0/8JEqr/Tg2urShKoCN5kVqck6QfWmFT1LPmuIKqw9WvOqnbMN4AzVC85e+/4BI1RhP7mHL8fdExWqT7x78c1mqA7yia8s0pe1T7Xr/VtyuxGqbVwDEy3cVUA3qJ6/xfjfDyFCFXasc3myhhMRoTpzj91mgirsWPt5Mtw9EaE6czfgFqsQ1UGeaklRqCtrm2pzOLjNBNU2jgIL5C5YJwhsU20OXHjFKkSVh1SH2FNalqnCw3bbDFCFHet+9hxgazSoVuCHy4YNUB1k34GOiA272KUafq/PNgNUU+w906LY0LtdqpUQVT6xilHNMW9XOe7OgQNUEa+K5hOrGFV2BXaKjA/YplpBUOUSqyDVEdbJ6VnckwD2qWaRT/lv008Vmgr4KuvPPjcKVCtIqjxiFaTaxZrcF0RKK3apZjFHUmzTThV6gHqCcbM6EQWqFQxVDrGKUq2wbVedrJ7CHapZ7Pkp27RTHWTbrmaJHjVjj2oFS5VdrKJUGUV4RPTBV2tUs4TDfrbppppjy66KomdgWaNaIVBlFqsoVTZeaeHnXm1RzRJPptqmmyp0bw+wlAH3uE91FpEqq1iFqbazFANniz72ao1q+JXpImIVpgrJ8BaGxJbn/ZjW/OoOFWIVpppmeTL9kPCBjdaoKhGrMFVouzrFkIEdjwJVJWIVp9pNz/C7WLyEa1RViFWcajv9IKWU+PlXFusACsQqTrWDPmoxiyX6co4qRazf1Eo1R89Zj4ifLmyzvkoWK0t8KE4V2q5OC/0NJ6lSxHpCK1WqEqFhjD1RoSovVgmqs2ghfpbvWCB3qEqLVYJqJ+0XhEKA4chQlRarBNUMLQiYI3Fcq12qsmKVoAplTkcpjvdkhKgGT8qJVYbqOGWLL4oNWLhANV2WEqsM1TFKEFCSOFzc9vzqkJRYZag2V09rlCrAzkhRlROrDNUOciUgJZ6vOvBcgJRYZajmyEFAu3i+6gBVKbHKUIWeT4NzpxHBsRU3qEqJVYpqhViUbh5zfztqVGXEKkV1I/FBirJECODCc6wSYpWiOpuUPOVkQgALVOcqFKsU1Q7SvE9WJgQwTzU7pVCsUlSJckyxzWK6QrUS9lHiYpWiSnSdsySqAOapZlGxn7BY5aiOE5os3RJVAPNUK6gNVVisclRHCMNph4S71haoZtGJiqhY5ai2EyYtyuKNAPNUK+joT1SsclQ78aFVWqIRMG1tvTNt1IRUFYo117R63peZtuCjpy5yQcstq+BSFck6q6CVsFWrlExtxbBl8cuUq7MKWhEbWrWb+FEVS9UVsVawVasxmdqKJam6ItYxbFBakQqsLEnVEbHOxl6iKPiglXlrI28AFLHqCPo6sXtS1YXjE5nqqEVyxZIi1q0altSCGw3ORSawepJ2LgRZrKd0rAlXC8xGJbDqgMdUeMU6oGFRBcyOmJKqWJmzHPw2VDA1wCfW/RpWNY75nWcLP2dhFmoxjGk7n1h1hDcjmCtsFHyC3ay1IKCCOp9YdYTiszBXOCLTCtRjj/3upZ4zdlnvgfw5prvQo398Yj2mYakpzARbn3bfw3mr/xJyoD09VRwnPrGe1rDaDkzzuiBVB1Qek75RBRzGJdZJDevNYHp+ToWr2SLgMi6x6qAK1QLRsC2Hq0+XAKfxiFWHX8Xc6h0OhasfANwWFuuXzVJFb0sp/RfWCBV17DrWiRzVsehuZAg1W/+FdUJFiDWF+6uLdKx6DjINmKP/wmz2BBAzdrFqqVujVdkt1bZWZzcIQmUXa01HdQWqsB5DlgcOW8tIq6JUmcWqJbCCSn4nkSt4t0B4e37hdHd8ec+7tmr6f7yWn68z+D8kDJVZrHp6R+jItCm8q61d0PtSDzZorE/zzWvJvi4CEsYm1tqwHkGUUOMr/F+i0dP7muIRlTYZqIxiPa3pNisgkquM4De5b9XP1Dn/dEGKKptYd2qi2odIrrISX2bJFYpc7Q45qExi1TY9cgTx28nde2DTq/NVb6OaxKpLqtCgxbnGf6v0N9p0hew2UJReA12s+gadZiHSqFlAgd16QGZZ6xSsgCpWbVKFdPnVs3+2ESix+nXC0xmUdnPYbi7zi1XjTF4nonPVDVTZZf8UW9WPOa8zMTrEL1Z9UoV2hWOIhFXO9j4rkptwFqprO5HqJotV5/hoCyJl7QMqbWKZ7qiqdjmmi0IUq0apQnnUJCIzMM+VU6q1a3CumCRWvZPO5XA/sApU28Sz+qR6Vqn8YtUq1WYH3hAsA9Btyy80SXViJyFuwItV81B+X6gQkAFa7AdzdUj1U+drOlxi1StVKGU9kxJ16aEKamtGVUv1sr9T6jE4sep+fqQ7VPdvA7qs/lkJqU68mp9GtDZ/9+d6Lj1bIbvs6mF6rQ8jVs1ShTp/S0OJgVrbe1hQqkw/SJFVrNofdWoPdf5aNVKddgMDIlLdwlStYRarbqlCDBeFOCu3qd38Ut3MWA1nFKv+p/Ka7/c9IZ+gwUhy3SEDFSnWB8PstUsV2puOhkquZuWKlOoUe0esyNLxyxhoujct4R2lJSu8Xc8h1RrHQAJKrNsC85YJFa0qBqiCLXOZpXqNZA9BV3uavbxyQnnJCtvr/iujVL/G9W1cEWsJLloVgRm7bYBFqg1OpTki1gI8vVIwRBVMHWaQ6nbOr+OIWItwKdAYVdgLoKQ6Jfd9rIm1D6ZKnk95b3pNDftP0KTK/xC9G2Idh0uBqOCmZ3HvsvyF8D/N51/vXdkjhfUbo0SpnpC9+WyJtRuiCpVX60uoI38tH+5dKdw/eL/qjJSqSBbkhFi7oQKr4BlZa19/qSyEtXaVWqm6IVb4nDSJk8ceu/tjIlw/r1SqbogVptpcGOAdRs7NW8mP9eEBlVJFi3XULNV2aM9tQ0xe8YF9/Vru/HU02KBMqkixmn7AcTZEtVOW6pn96yCnj52aX1YnVVTdvd8sVOiQnRegJQkfurSQT7A1hVJF1IdMSxUaFFukimoQrF1ekgplhaWaLtmWKnRkeIjqfqkq40GZMRhhqaYY2iwm7/8zVJWeSJvbVTUuVeg0GZESjaR9EL7+UdXn/ApzFW8uFSxLNTxQcVT96cmZgyWjUm2xLNVcGUF1LDR4Jd8b+4xJqbZaluo94S/zTqjaosTWrzYm1bBbNStV1IMix/RQDYKLq4akGspXzUq1q0Sn2lDobn5rRqppq1JFPygOUZ1QecX1RRNShSPwhlGpoh8UPxbuuCj8IXeVtEsVqmsYrgHeiP4+kzqpBkEX264lk9HBA02HDULFnb6hmeq0XFmoPiRxhXH4C1nMVDFUNZxQzORdJbBCMbjJ8+PfBGxUdfzSuWd0YoVDAIM9APw5UZPN72DSc/88zRC7fkvUc1tzAB34rfhUc21C06K6GLzAR8Q+Gnqq4QFjUDOE9seEEapB+ud0rF9SUQXYaQoq8ZwoQ1SZDgC9RuRzm0tu5s6OvQe4QDXIUie1aiJh6xjQHMOg7YeAg6rOU0Jz/0OdGRS4f5uLQ6YO5b8RuEI1CO6iDmHxF83HQ8/k2N3+zVMN7igpx9pnobdKPSbSLNXgK1XVWIvqWsTMroy6QximGnQVFGMtqG67iWf/9qgi36XSXMrfKUHVQL6a/jRwjyp9VXyRQEFPg0gwULVGNQjupcWtlztM9V7gKFXqSes1juS1apbqW8BZqsEFbOPYLAaMUmU8ed8OVfoR9reJFa3dgGqLavA4LR/YPOqeX2V+R4QtqsENNKxTc12j+nPgPFU61sbv+anqnAUg7v71ohtU6ViZ9ixTuVX6OeJSl/YRqBp9Gzsd68MDrlCl5C7fDfrsVK2FsIYefqfUrA5rWiklz54MHKLKgBV5BAaeqqb3nlNqQhPDTlFlwIo4AsM4VUr98mxnCKJatEmV5eVLZC/QDT0+piNlKTE0h/uaH/fqs0qV5UVhteuZqS7SsEJaX+jRcPV80jZVpvevPTJsjSq1h3lqIByLTMLSNW8seWDjFdy/1vx2vvXU3sVwQKU6YYEq24utcHKdo7XHegFtN63tDBylylReB40XGaiqfT9n7krqqv4UoKlW7FNlfLfdFlQwMEsf1fVl6pI+jq6en9D4tIWy1OV9Q5yU3aqLKsuU+KOY6rm25634rIXxuKzwwcy6qLKMiG8O3KbKjBVs2W2CKtPjDFMDeKojTlBlxwq9iEAL1adYFjMxMyrJQUN0c4yVfVVhBdfN+D4a3tGdeZnJGTX9uPD5VcqfZDeAtXaeq/LIivHRO2gWxFmqPFjPc1VN9eIy2/X3Q7VCaBntzlBlDrDOfa9VZ9c6pjRj/Q/GHzY0XtMGpXjKzggyUcqA9q1fqK2uzGM91SA8swSfteYSVVrPLWSblvWpopp+nd0BhQfB4LPWUvrLviqrmWQTFkWG5/Q4xBhYKzTy3abUMcnbHRao/udLPA79qoBGdalzVIMbJI4aE9ls164o81wCPQcKn2nZ/C7Rr9qnyvBkFtaGea/12H9fwncFzHDtHOgJxRbVYbTxUGCGHeDBmluwgvv3w40pkc8KfjtwwsT3rE2Lr76QJeNYsOJSgU/HTtd3w44I2Bq0ItnTUudjfntxb/5DuAgqP6+3pyz2ufgHbEKVPyepBln5F5k0enpW9fb25s/Zgun/XN7zMZkPJLwiKvS+gKrl1jXO6z0HHLP7CQW9pmSkEe5juWN3lJyC+gnSWkPvYSk60LjS5gWUWe2LxKWG3hnU5yxVpiMwzBht8Dv0fqtxN1osmF5H2Qmo1IcUmv72SVRQ4JQxTDrot9tojafwewO73SlbI+3Oqm2X+go9qQhRnWNkBlymO/eM3bufAUn4fayzXCpbu+ddb2NpO3eGSlRwwdVFYzvEUYPVn2daX/g91ynXCqxI61ptA+ojjDWw9pAy25wrsGL6n8bdQOMV1rXNCXnRrIulQLQbMJvCfp+9WDsCFa1RUYGzlllucOt/nmNhR0LRaTqUFzhsN71shmltDdfEWV94WK3pvjoVOG6/udYA1O9wNsCaykC1cL1lIgi857p3N++SymGECNCuc9XpB7Y8y78gABcCkU7BeVu73CGmUHFlEt0fjIRldmmIX/c+K7SWLCKMGnO/EIC2eYod7JkZQyFrTqTeQSQG/UGEjHOah5hIXSd+l6IeTmj+s1uCaNmCl1RkXLcuk9lPZiFKKSn3ZoL4MtmFkmA3/VlyMxlD3O0d0UlZsWAXLBd1Bfe9Ol/68s0J635Ee+BkEFF77O6VvJJtXHb1sIpL9yGiqDQiho2o3X73StYxv/qSKz6k6rLIo8qa2m31IOKWy0/PU5Fv+iW9rw2rvGQJngcKpawgiIWl8x/u7X2pp+c8303T/+OPvcvy6tOcHPJm74tkcuWOdQHUqFp3VJMrR6wTGURtjG5y5YS1IntU7RHpB7pq6BN1UojiQGLs1o2815tLLicSTJw2jtyXWuKTBlixIjKGak6u6gkmmSTgfDOlHMEeizuWwYiy6PqwpdPWgXGglaY/fyEBxWUpzGY/EulugG1r7gQcx/z52wkoLhvBJFHNGj6dgJIIV/up/jYx/nB1PyY2aCSgJMLVYdz/MZqQEg5Xa1gR70xQcVgb1n2OJxVWYWvFtqhHkgqrsG3EhKtwwHosQcVhR7CKbA5YTyWohAOrfmyBIKkF8lgVE67C0UESWgkHVs3nlFWlQqvWnpk2HDUuTatfJBVYNRidA4vNifSYhtzpc7MJ2f4RqaqVz1THCJWpjVJVK5+pVgh6nC1VtfKZapFQ8W8DMo+yeUy1uT8NDalB8cHhhCqjZQmBFRxa9SdUGS1FLE0XZeorHlPdSNyQjsgEAR5TrRC5zZEJAjymWiT+45RMEOAvVSgE6CfvZYcTqiIhwE4+6AlVlhAgPPhXkAgC/KXaHAKEj1cZlwgC/KVaoTytOiYRBPhLtUx5pGI2EB8N9pZq81OBiGnKDiDeDvCWanNRqqlpxYg9oRq2dmq/j+YiEqph66b2psfFZwK8pVqkHlgxJj5u6SvVdIl6f6fEc1ZfqWbpCWlWPGf1lWorPW6CKgFvJ1SpNsYQ49Ndb0K12Q4x5KNHhLcrX6mWGGons4S3K0+pQjsRus7XKbxdeUoV2qzQT6pCMwHvJFQpNkKcBUDnrJMJVa7MCjdLPS7aEfSTKpRZ4YKmjaLFQD+pdrAF+CnRYqCfVNvZdvfmk9k4HhDyk+oRxki0Kti78pNqgTFr6hN8lMVLqlAgOslaLXghoUqwFGt4D/3FrQlV9oJVP+Pns+cBXlKF3CXhW1fFylY+UoVyABKrcbE8wEeq0CgAqRw9CJBHiSZUqTnAVvZ97URCFWsV9ropNMAykVBl3ILIsX0BiADykGqWR3/NIy6sbxL2kGo7T82kXajA4iHVCs++nhVyrB5SrXLFoCURx+ofVUh9tL5Jn4hj9Y9qO19uPyjiWP2jWuGrQ6VEHKt/VKt8sxNQHsCGyDuqkFul1/eLAo7VO6qQW6X3osYESgHeUa3wjvlAw0ONhGrY0lXeGxrqBzDVWH2j2sa/+UAFlgcSqrTwkyVQ6uZvXvlGtY8/qIcca20goUqJPhdxX4RpKsAzqimRmL7APR3sGdVukfyzmzfE9Y1qQaRW0sotcL+oZoFIXQ92rLckVJtsAxBq7hXYBwh8pNon1oju5o2tvKKaK4kNT6d4YyuvqMJ0+hkvA0e5xxOq+DuZfXa6yOk5vKJa5g4837V9nHUrn6hCzwOBrzNfB650bU2oYhW3lPk60MQr9Wgbn6gW+YtP79k4X6DrEVU4ReI5nKKdL73yiCqcWO3huBD0lCCtdO0RVSix4jv+F0paa6MJ1bMGPbrGnK6esxGuuow/VGfzJkjEtOxEQhW5jfdzXQmOrcgBhDdUcyXxuArllfsTqkG4oD/JeSk4tjqdUEU4gD1Sl6Jo3ReqsAPg/6pFDhfgC1XYAUxxX2sfhwtopnogz2z6XlGaY1/EQmaq48L1KlzdiuQC5gBBW6qNapvoko5yOACB5VfZEwFPqMIpQENgXd3s1RlPqMLRpshb1uH0qjbsOVW4BsD9MmBUekUoB/pBdQOQS6zOWYU5kfCD6iGu2ghrdIYPRL2gCtecWR9IpwUSW72mCgfwNcFgu481lfCCakGysoKLzxDvxPGHaugDbxFcWSiUOO4xVTh8B8OiS4NdQGPAW6qhOHNSeGmzGeNeD6i2qnIACBdw0luqfcocAPNnxZ8qXMSXcAAIF7DVU6r71DmAIMiUmKYK4k+1zF5qYjC4+o2eZo891RTjBiNaCzjhJdWKmhoAthaAlH7cqYZioZpkw+0I/IEPeEh1EPBMRwh0BJD7VdypllV0AZoytSrDfhVzqiFlNQZklzfCsF/FnOo4a5WJ3ToAPb+KN9VQEwBbEeUwuFoLtnlGdQfL1sJroQ2wHvIqrT2CtlMb1azokhbRd5atCtYXKixIhsBRsyHA3BWVKlxNeUW1qLJcRchaNbpD9yyl6VYNNRcE5wuiaaESQG1AzQeP6PEskbAsUB+s4kLWbd5Q3aEjWMU47NqoJ1BDZXuFW3U4uNjuCdVBjd88/IvVB7yAmg5Vq+RaK5Qqq1Q3LMoZwGmFnx7Oqv3IBMp6Q/XQfiVduI1mBjCl+VbwQaxFzbt0qCvog1jDUlUdUYbzq1MeSvW44iuEMzew0zupqv/Kh4BvNZaigdsz5ZtYw9UPDVtJOM2IuVhDJUAtCeUGv8SKkOoDGi4TLgbEWqxhr6qyBEAKrmIsVsQ2clzLhRDB1ZRHUtUloQrwJsFCSPWEuUtN+SPV/jhcy6qtM6mfVsTF4tgUQMTmGgd2UFeLYwcrXPfU2lIyfDlLljMsHpRYH4wd1R2mtYO4oJ6Uw6IhkkjNYyWoK34z9mUV7cpBiDVmeSsihdQ+AYUSa7x6LUUbTg4l1mvinQAYGNZDiTVG0RUqyjGxH6PEGp/oaocVqaLFWjscl62qZCt0RP2cJ2NCtc+SVNFijUntCrVVmcpyUGKNxYaFKgAYm9ZHijUOjwp8ENhMyFFijUGG1QGsqgUp1sg3W9JFYLd2hBTr9yJO9UfAsmNDuvWIB61dqBuwbvQRqCHU7zoZaaqHUF/JbP8IlS4D8NEIQ30SOBAvouJlUJsbr/vffDGuGC8fgLz/zYc1nSBOcQDy/kcfiqjXKiA+cUAWef+fcGYlkZxlQcb/oGYlW0SmAuBXEaR6EQDOVDYyZcNnVJndIurDdlYz5NRqVKvD2gAZ0h1FLrzqA8CpYlEH+lC4T0a/qKLweBV+uwe5oNr+CEHFHCj4NZsuqRp114pxqg2r3wC9YUXItaKdqu1ZZ/SGBb4V6UjVel8jiznG9E+RgHojZvXWe3DoDCsaBQF00u1CvxhdvwZgwv3j2XIF9NJdmG1IYe6iSdfrLGnMTmWjAMgatALwqONU3wLuharUkM/1HOvXmFW7Emyvw51nfnkEt393BsfHMQusuTsl1IHZ/h2aGcX6gIarTdeWquP3P9EHTLhZEcgUnL//SXEAmHIxbM0VgdP7//vrxPkAF8PW9CHcYuuOaQD/3pPNrmFNf9rCe2HUVn+m7ebIQHWvP5zG+irwkFMLvRe7ThdnGbpKkcCKh+pmmW0dcB9rGg/V1adx/4Bf8f1u3FwEn+qa+z8fXhWA25EACaq79eAOvGsF37C/6txq/PJc7rYTXCuYsp28Zoogck71nL1JWPiE3T22i+CfHD87Jk3SQ2O3xZWtr5LuI8e7QS2kxdf+am1dT5dIP7fzT4mQX4R6vaVV/c3Sa2GV2a+JX8BK4Jq7krimSMwwvkX8ClPm96yuInFFj0YBKr7P/q4Tu8rweh6vEtczGZHnQ0g51hlbY/Q3vou8mInIvAKxi6wOsMXcntuymryUxuEgMtZWonyXVwwt5E7K71uL1BM362gvlH/YxI2Xe462jIidxfdD2vepP699DU+VaYv4eBAxu4j2jcB39JZbMp+hriCCzzHeS/1SjRc1Xv7iKvX6D0UPKrFE/H4woKvesn41/eKbgyCmWMGndLiBzG8Zrrw5oqfF4WdEZsY2a1RHA7ldJYbrnorsEXy5IsPXA/X/VfkF0/9XZrnoVITfKs+GVSFXRqaRhsqMFTTWqPCvmV1V4AFUcl+z2b8uni95qZuWlxivtSXiUBkjgXO2d5m4I0jPu5b5OptjcFYsB9Zpwf5M6BoLmGUaE6hMWdbMnYsb7ILlZZ4LPBTExO4CXFZbcjWrj137+soS34d/IoiNXQB4rb7k3/IUz5L/3coy9+d+PoiRPV4CArZpSe+yfLhv0JKf17vyEpEPrF0VxMrWl4G49Uzbkt7e3pVn/kPic+q7g5hZSxHYtqm5QewsfaVlqPfH8XWcQfCGVajXBzG1r1StMW38Poittay2BHXL3CDGlt5lBeqagSDe9lTZOFMDTXLrlvmLYaiPDAc+2J0mNy1jw0c+ydUToRqVqz9CPWe5ZwxA/f5o4Jut1x27btkd+GgX6wyy6i8GnhrblIlQIXXNaOCvZQ7q4Fq7bjjw29RzTZie46oyzGokTN/zr78sKGI68efRBOd5W/gFBUxvPZCAhGuvB+UEO3Hd3AQiyn66QjSCra/6R4KPBJZfsRMJUrqtvXsle1DQWHLF/AQZoz32+vJLqUTvW3z1hxJUvHb79OBPDypHqE1Psiy7MAEkFRzk8/ne92z6vyOw1f8/bllQ026MHMUAAAAASUVORK5CYII=" />
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#D8F1FF" align="center" style="padding: 70px 15px 70px 15px;" class="section-padding">
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+                <tr>
+                <td align="center" valign="top" width="500">
+                <![endif]-->
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+                    <tr>
+                        <td>
+                            <!-- HERO IMAGE -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td class="padding" align="center">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!-- COPY -->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding">Finaliser votre inscription à Plastic Origins</td>
+                                            </tr>
+                                            <tr>
+                                                <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                    Bonjour,
+                                                    <br /><br />
+                                                    Merci de vous êtes inscrits à Plastic Origins. Il vous reste à valider votre adresse email en cliquant sur le bouton ci-dessous.
+                                                    <br />
+                                                    A bientôt,
+                                                    L'équipe Surfrider Foundation Europe
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        <!-- BULLETPROOF BUTTON -->
+                                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td align="center" style="padding-top: 25px;" class="padding">
+                                                    <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
+                                                        <tr>
+                                                            <td align="center" style="border-radius: 3px;" bgcolor="#1E43EB"><a href="%%YES_LINK%%" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #1E43EB; display: inline-block;" class="mobile-button">Valider mon inscription</a></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr>
+            <td bgcolor="#ffffff" align="center" style="padding: 20px 0px;">
+                <!--[if (gte mso 9)|(IE)]>
+                <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+                <tr>
+                <td align="center" valign="top" width="500">
+                <![endif]-->
+                <!-- UNSUBSCRIBE COPY -->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" style="max-width: 500px;" class="responsive-table">
+                    <tr>
+                        <td align="center" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666;">
+                            Plastic Origins - Un projet de Surfrider Foundation Europe
+                            <br>
+                            <a href="https://www.surfrider.eu" target="_blank" style="color: #666666; text-decoration: none;">Surfrider</a>
+                        </td>
+                    </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

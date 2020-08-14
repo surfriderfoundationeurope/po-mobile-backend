@@ -32,6 +32,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("Register")]
         public async Task<IActionResult> RunRegister(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "register")] HttpRequest req,
+            ExecutionContext context,
             ILogger log)
         {
             log.LogInformation("Register request");
@@ -49,6 +50,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             }
 
             var registerVm = JsonConvert.DeserializeObject<RegisterViewModel>(reqContent);
+
+            _userService.BaseFunctionDirectory = context.FunctionDirectory;
 
             var result = await _userService.Register(
                 registerVm.LastName, 
@@ -106,13 +109,15 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             var privateKey = Encoding.UTF8.GetBytes(_configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
             var decodedToken = Jose.JWT.Decode<JwtTokenContent>(code, privateKey);
 
-            if(decodedToken.ExpiresAt < DateTime.UtcNow)
+            if(decodedToken.ExpiresAt < DateTime.UtcNow 
+               || string.IsNullOrWhiteSpace(decodedToken.SpecialRights) 
+               || decodedToken.SpecialRights != "validate-email"
+               )
                 return new UnauthorizedResult();
 
             await _userService.SetAccountConfirmed(decodedToken.UserId);
 
-            return (ActionResult)new OkObjectResult(
-                "Votre compte a été validé.");
+            return (ActionResult)new OkObjectResult("Votre compte a été validé.");
         }
 
         [FunctionName("RefreshToken")]
