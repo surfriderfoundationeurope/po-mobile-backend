@@ -18,7 +18,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Tests.Infrastructure
             {
                 Email = email,
                 UserId = userId,
-                Token = UserService.InternalGenerateUserToken(email, expiresAt, userId, keySignatureKey),
+                Token = UserService.InternalGenerateUserToken(email, expiresAt, userId, keySignatureKey, false),
                 ExpiresAt = expiresAt
             };
         }
