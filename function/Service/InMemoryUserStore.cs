@@ -50,5 +50,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
             return Task.FromResult(true);
         }
+
+        public Task SetAccountValidated(string userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

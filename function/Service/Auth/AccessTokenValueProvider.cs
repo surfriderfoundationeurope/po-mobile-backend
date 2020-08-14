@@ -40,6 +40,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
                     if (decodedToken == null)
                         return AccessTokenResult.NoToken();
 
+                    if (string.IsNullOrWhiteSpace(decodedToken.SpecialRights)
+                        || decodedToken.SpecialRights != "validate-email")
+                        return AccessTokenResult.EmailValidationOnly();
+
                     return decodedToken.ExpiresAt < DateTime.UtcNow 
                         ? AccessTokenResult.Expired()
                         : AccessTokenResult.Success(new User(decodedToken.UserId, null, null, null, null, decodedToken.Email));
