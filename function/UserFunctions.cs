@@ -95,6 +95,26 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 });
         }
 
+        [FunctionName("Validate")]
+        public async Task<IActionResult> RunValidateAccount(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "validate/{code}")] HttpRequest req,
+            string code,
+            ILogger log)
+        {
+            log.LogInformation($"Validate user account request");
+
+            var privateKey = Encoding.UTF8.GetBytes(_configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+            var decodedToken = Jose.JWT.Decode<JwtTokenContent>(code, privateKey);
+
+            if(decodedToken.ExpiresAt < DateTime.UtcNow)
+                return new UnauthorizedResult();
+
+            await _userService.SetAccountConfirmed(decodedToken.UserId);
+
+            return (ActionResult)new OkObjectResult(
+                "Votre compte a été validé.");
+        }
+
         [FunctionName("RefreshToken")]
         public async Task<IActionResult> RunRefreshToken(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refreshtoken")]
