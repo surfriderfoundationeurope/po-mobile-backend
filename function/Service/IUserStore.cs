@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Dynamic;
-using System.Resources;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+
 //using StackExchange.Redis;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
@@ -14,6 +12,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<bool> CheckAvailability();
         Task<Tuple<string, string>> GetUserPasswordHash(string userEmail);
         Task<bool> UpdatePassword(string userId, string passwordHash);
+        Task SetAccountValidated(string userId);
     }
 
     //public class RedisUserStore : IUserStore
