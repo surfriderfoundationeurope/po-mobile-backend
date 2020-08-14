@@ -7,7 +7,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
         public AccessTokenStatus Status { get; private set; }
         
         public User User { get; private set; }
-
+        
         public static AccessTokenResult Success(User user)
         {
             return new AccessTokenResult
@@ -16,6 +16,15 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
                 Status = AccessTokenStatus.Valid
             };
         }
+
+        public static AccessTokenResult EmailValidationOnly()
+        {
+            return new AccessTokenResult
+            {
+                Status = AccessTokenStatus.EmailValidationOnly
+            };
+        }
+
 
         public static AccessTokenResult Expired()
         {
