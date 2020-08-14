@@ -105,5 +105,22 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 return true;
             }
         }
+
+        public async Task SetAccountValidated(string userId)
+        {
+            using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
+            {
+                await conn.OpenAsync();
+                var result = await conn.ExecuteAsync(
+                    "UPDATE campaign.\"user\"" +
+                    "SET " +
+                    "emailconfirmed = True " +
+                    "WHERE id = @id",
+                    new { id = Guid.Parse(userId)}
+                );
+
+                return;
+            }
+        }
     }
 }
