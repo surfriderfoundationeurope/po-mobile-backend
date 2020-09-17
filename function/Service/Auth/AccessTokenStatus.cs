@@ -6,6 +6,6 @@
         Expired,
         Error,
         NoToken,
-        EmailValidationOnly
+        SpecialRights
     }
 }

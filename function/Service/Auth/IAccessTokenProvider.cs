@@ -17,11 +17,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
             };
         }
 
-        public static AccessTokenResult EmailValidationOnly()
+        public static AccessTokenResult SpecialRights()
         {
             return new AccessTokenResult
             {
-                Status = AccessTokenStatus.EmailValidationOnly
+                Status = AccessTokenStatus.SpecialRights
             };
         }
 
