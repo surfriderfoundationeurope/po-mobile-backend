@@ -55,5 +55,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         {
             throw new NotImplementedException();
         }
+
+        public Task<User> GetFromEmail(string email)
+        {
+            return Task.FromResult(_itemsDictionary.FirstOrDefault(u => u.Value.Email == email).Value);
+        }
     }
 }
