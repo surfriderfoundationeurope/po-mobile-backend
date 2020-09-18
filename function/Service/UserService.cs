@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Jose;
 using Mailjet.Client;
 using Mailjet.Client.Resources;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -23,6 +24,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<string> RefreshToken(JwtTokenContent token);
         Task<bool> UpdatePassword(JwtTokenContent token, string password);
         Task SetAccountConfirmed(string userId);
+        Task ResetPassword(string email);
     }
 
     internal class UserService : IUserService
@@ -75,7 +77,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             string originalEmailHtml = await File.ReadAllTextAsync(Path.Combine(BaseFunctionDirectory, "../Assets/mail-validateaccount.html"));
             originalEmailHtml = originalEmailHtml.Replace("%%YES_LINK%%", $"{_functionBaseUrl}/validate/{emailValidationToken}");
 
-            await SendEmail(email, originalEmailHtml, string.Empty);
+            await SendEmail(email, originalEmailHtml, string.Empty, "Validation de ton compte Plastic Origins");
 
             //Contract.Ensures(user != null);
             return user;
@@ -147,13 +149,39 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             await _userStore.SetAccountValidated(userId);
         }
 
+        public async Task ResetPassword(string email)
+        {
+            //var user = await _userStore.GetFromId("06566a9d-e0f4-414d-849a-16f11888fc42");
+            var user = await _userStore.GetFromEmail(email);
+            if (user == null)
+                return;
+
+            var newPassword = GetRandomPassword();
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            await _userStore.UpdatePassword(user.Id, passwordHash);
+            string originalEmailHtml = await File.ReadAllTextAsync(Path.Combine(BaseFunctionDirectory, "../Assets/mail-newpassword.html"));
+            originalEmailHtml = originalEmailHtml.Replace("%%PASSWORD%%", newPassword);
+
+            await SendEmail(email, originalEmailHtml, string.Empty, "Reinitialisation de mot de passe");
+
+        }
+
+        private string GetRandomPassword()
+        {
+            List<string> words = new List<string>() {"Wax", "Planche", "Leash", "Soleil", "Poisson", "Plastique", "Ocean", "Poncho", "Canette", "Reef" };
+            Random r = new Random();
+
+            return $"{words[r.Next(0, words.Count -1)]}{words[r.Next(0, words.Count -1)]}{r.Next(100,999)}";
+        }
+
+
         private string GenerateUserToken(string email, DateTime validityDate, string userId, bool isValidationEmail = false)
         {
             return InternalGenerateUserToken(email, validityDate, userId, _jwtTokenKey, isValidationEmail); ;
         }
 
 
-        private async Task SendEmail(string to, string content, string textContent)
+        private async Task SendEmail(string to, string content, string textContent, string subject)
         {
             MailjetClient client = new MailjetClient(_mailJetApiKey,_mailjetApiSecret)
             {
@@ -187,7 +215,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                             }
                         }, {
                             "Subject",
-                            "Validation de ton compte Plastic Origins"
+                            subject
                         }, {
                             "TextPart",
                             textContent

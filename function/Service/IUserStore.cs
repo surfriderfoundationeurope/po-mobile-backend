@@ -13,6 +13,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<Tuple<string, string>> GetUserPasswordHash(string userEmail);
         Task<bool> UpdatePassword(string userId, string passwordHash);
         Task SetAccountValidated(string userId);
+        Task<User> GetFromEmail(string email);
     }
 
     //public class RedisUserStore : IUserStore
