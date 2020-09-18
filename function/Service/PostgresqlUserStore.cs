@@ -13,6 +13,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public PostgresqlUserStore(IConfigurationService configService)
         {
             _configService = configService;
+            
         }
         
         public async Task<string> Create(User userData)
@@ -46,10 +47,25 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             {
                 await conn.OpenAsync();
                 var result = await conn.QueryAsync<User>(
-                    "select  id,lastname,firstname,yearofbirth BirthYear,email,passwordhash from campaign.\"user\" WHERE isdeleted = FALSE AND id = '@Id'", 
-                    new { Id = userId }
+                    "select id,lastname,firstname,yearofbirth BirthYear,email,passwordhash from campaign.\"user\" WHERE isdeleted = FALSE AND id = @Id", 
+                    new { Id = Guid.Parse(userId) }
                     );
                 return result.FirstOrDefault();
+            }
+        }
+
+        public async Task<User> GetFromEmail(string email)
+        {
+            using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
+            {
+                await conn.OpenAsync();
+                var result = await conn.QueryAsync<dynamic>(
+                    "select id Id, lastname LastName,firstname FirstName,yearofbirth BirthYear,email Email,passwordhash PasswordHash from campaign.user WHERE isdeleted = FALSE AND email = @Id",
+                    new { Id = email}
+                );
+
+                dynamic r = result.First();
+                return new User(r.id.ToString(), r.lastname, r.firstname, r.birthyear.ToString(), r.passwordhash, r.email );
             }
         }
 
@@ -95,7 +111,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             {
                 await conn.OpenAsync();
                 var result = await conn.ExecuteAsync(
-                    "UPDATE campaign.\"user\"" +
+                    "UPDATE campaign.\"user\" " +
                     "SET " +
                     "passwordhash = @hash " +
                     "WHERE id = @id",
