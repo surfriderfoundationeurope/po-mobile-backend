@@ -174,7 +174,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 });
         }
 
-
         [FunctionName("ResetAccountForm")]
         public async Task<HttpResponseMessage> RunResetAccountForm(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "auth/reset")] HttpRequest req,

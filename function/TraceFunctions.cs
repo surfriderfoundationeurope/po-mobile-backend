@@ -53,6 +53,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         public async Task<IActionResult> RunUploadTrace(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace")] HttpRequest req,
             [Blob("trace", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("trace-attachments", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerAttachments,
             [AccessToken] AccessTokenResult accessTokenResult,
             ILogger log
         )
@@ -64,11 +65,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             var body = await new StreamReader(req.Body).ReadToEndAsync();
 
-
-            TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(body);
-
-            await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
-            
+            /// Backup trace to storage account
             string name = $"{DateTime.UtcNow.Year}/{DateTime.Now.Month}/{DateTime.UtcNow.Day}/{traceVm.id}.json";
 
             var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
@@ -76,9 +73,23 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
             await traceAttachmentBlob.UploadTextAsync(body);
 
+            // Insert it into PGSQL
+            TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(body);
+            await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
+            
+            string attachmentPath = $"{accessTokenResult.User.Id}/{traceVm.id}/{{fileName}}";
+
+            var sas = blobContainerAttachments.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+            {
+                Permissions = SharedAccessBlobPermissions.Add | SharedAccessBlobPermissions.Create |
+                              SharedAccessBlobPermissions.Write,
+                SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(20)
+            });
+            
             return new OkObjectResult(new
             {
-                traceId = traceVm.id
+                traceId = traceVm.id,
+                uploadUri = $"{blobContainerAttachments.Uri.AbsoluteUri}/{attachmentPath}{sas}"
             });
         }
     }
