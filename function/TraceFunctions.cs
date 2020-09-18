@@ -64,6 +64,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 return new UnauthorizedResult();
 
             var body = await new StreamReader(req.Body).ReadToEndAsync();
+            TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(body);
 
             /// Backup trace to storage account
             string name = $"{DateTime.UtcNow.Year}/{DateTime.Now.Month}/{DateTime.UtcNow.Day}/{traceVm.id}.json";
@@ -74,7 +75,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             await traceAttachmentBlob.UploadTextAsync(body);
 
             // Insert it into PGSQL
-            TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(body);
+
             await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
             
             string attachmentPath = $"{accessTokenResult.User.Id}/{traceVm.id}/{{fileName}}";
