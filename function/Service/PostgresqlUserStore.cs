@@ -24,6 +24,14 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 Guid id = Guid.NewGuid();
                 string insertQuery = "INSERT INTO campaign.\"user\" (id,firstname,lastname,email,emailconfirmed,passwordhash,yearofbirth,isdeleted,createdon) VALUES (@Id, @FirstName, @LastName, @Email, FALSE, @PassHash, @BirthYear, FALSE, @CreationTime)";
 
+                DateTime? birthDate = null;
+
+                int yearOfBirth;
+                if (Int32.TryParse(userData.BirthYear, out yearOfBirth))
+                {
+                    birthDate = new DateTime(yearOfBirth, 01, 01);
+                }
+
                 var result = await conn.ExecuteAsync(insertQuery,
                     new
                     {
@@ -32,7 +40,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                         userData.LastName,
                         userData.Email,
                         PassHash = userData.PasswordHash,
-                        BirthYear = new DateTime(Convert.ToInt32(userData.BirthYear), 01, 01),
+                        BirthYear = birthDate,
                         CreationTime = DateTime.UtcNow
                     }
                 );
