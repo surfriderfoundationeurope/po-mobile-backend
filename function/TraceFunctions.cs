@@ -17,10 +17,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
     public class TraceFunctions
     {
         private TraceService _traceService;
+        private IMediaStore _mediaStore;
 
-        public TraceFunctions(TraceService traceService)
+        public TraceFunctions(TraceService traceService, IMediaStore mediaStore)
         {
             _traceService = traceService;
+            _mediaStore = mediaStore;
         }
 
         [FunctionName("UploadTraceAttachment")]
@@ -39,12 +41,24 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 return new UnauthorizedResult();
 
             string name = $"{accessTokenResult.User.Id}/{traceId}/{fileName}";
+            Guid mediaId = Guid.NewGuid();
 
             var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
 
             traceAttachmentBlob.Properties.ContentType = req.ContentType;
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
+            traceAttachmentBlob.Metadata.Add("mediaId", mediaId.ToString());
             await traceAttachmentBlob.UploadFromStreamAsync(req.Body);
+
+            // Add to Media
+            try
+            {
+                await _mediaStore.AddMedia(mediaId, fileName, accessTokenResult.User.Id, traceId, DateTime.UtcNow, traceAttachmentBlob.Uri);
+            }
+            catch (Exception e)
+            {
+                log.LogError(e, "Unable to store media to DB");
+            }
 
             return new StatusCodeResult(200);
         }
