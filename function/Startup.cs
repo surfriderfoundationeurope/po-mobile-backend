@@ -15,6 +15,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             //builder.Services.AddSingleton<IUserStore, SqlUserStore>();
             builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
 #endif
+            builder.Services.AddSingleton<IMediaStore, PostgresqlMediaStore>();
 
             builder.Services.AddSingleton<IConfigurationService, EnvironmentConfigurationService>();
             builder.Services.AddSingleton<IUserService, UserService>();
