@@ -19,18 +19,19 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             {
                 await conn.OpenAsync();
                 Guid id = Guid.NewGuid();
-                string insertQuery = "INSERT INTO campaign.\"media\" (\"id\" ,filename ,createdby ,id_ref_campaign_fk ,isdeleted ,createdon ,blob_url) VALUES  ( @mediaId, @fileName, @userId, @campaignId, B'0', @createdOn, @storageUri)";
+                string insertQuery = "INSERT INTO campaign.\"media\" (\"id\" ,filename ,createdby ,id_ref_campaign_fk ,isdeleted ,createdon ,blob_url) VALUES  ( @mediaId, @fileName, @userId,  (SELECT id from campaign.\"campaign\" WHERE id=@guidCampaignId) , B'0', @createdOn, @absoluteUri)";
 
-               
+                var absoluteUri = storageUri.AbsoluteUri;
+                var guidCampaignId = new Guid(campaignId);
                 var result = await conn.ExecuteAsync(insertQuery,
                     new
                     {
                         mediaId,
                         fileName,
                         userId,
-                        campaignId, 
-                        createdOn, 
-                        storageUri
+                        guidCampaignId, 
+                        createdOn,
+                        absoluteUri
                     }
                 );
             }

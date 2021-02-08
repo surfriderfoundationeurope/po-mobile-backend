@@ -16,6 +16,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.8.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="3.2.1" />
     <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="jose-jwt" Version="2.5.0" />
