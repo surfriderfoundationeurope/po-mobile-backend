@@ -24,7 +24,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-
+    - uses: nuget/setup-nuget@v1
+    - run: nuget restore Surfrider.PlasticOrigins.Backend.Mobile.sln
     - name: 'Resolve Project Dependencies Using Dotnet'
       shell: pwsh
       run: |
