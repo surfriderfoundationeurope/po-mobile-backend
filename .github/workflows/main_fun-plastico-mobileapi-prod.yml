@@ -38,7 +38,7 @@ jobs:
       id: fa
       with:
         app-name: 'fun-plastico-mobileapi-prod'
-        slot-name: 'production'
+        slot-name: 'main'
         package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_61404f8fc4834121a8ac31e473c5e1f3 }}
   
