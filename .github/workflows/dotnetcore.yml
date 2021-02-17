@@ -18,8 +18,10 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
-    - name: Setup NuGet & Restore
+    - name: Setup NuGet
       uses: nuget/setup-nuget@v1
+
+    - name: Restore NuGet packages
       run: nuget restore Surfrider.PlasticOrigins.Backend.Mobile.sln
 
     - name: Build with dotnet
