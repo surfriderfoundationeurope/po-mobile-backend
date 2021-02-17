@@ -146,6 +146,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             try
             {
                 await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
+                await _traceService.AddTrajectoryPoints(traceVm);
             }
             catch (Exception e)
             {
