@@ -11,9 +11,6 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
-using System.Security.Cryptography;
-using System.Text;
-using Azure.Storage.Blobs;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {

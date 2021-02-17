@@ -11,6 +11,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public bool IsAiDriven { get; set; }
         public Guid UserId { get; set; }
         public string Riverside { get; set; }
+        public string Remark { get; set; }
         public DateTime CapturedOn { get; set; }
     }
 }

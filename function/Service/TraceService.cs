@@ -35,6 +35,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             dbTrace.UserId = Guid.Parse(userId);
             dbTrace.Riverside = trace.bank.ToLower().Replace("bank", "");
             dbTrace.CapturedOn = trace.date;
+            dbTrace.Remark = trace.comment;
 
             // Save to DB
             await _traceStore.Create(dbTrace);
@@ -58,7 +59,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
             {
                 await conn.OpenAsync();
-                string insertQuery = "INSERT INTO campaign.\"campaign\" (id, locomotion, isaidriven, id_ref_user_fk, riverside, createdon) VALUES (@Id, @Locomotion, @IsAiDriven, @UserId, @Riverside, @CapturedOn)";
+                string insertQuery = "INSERT INTO campaign.\"campaign\" (id, locomotion, isaidriven, remark, id_ref_user_fk, riverside, createdon) VALUES (@Id, @Locomotion, @IsAiDriven, @Remark, @UserId, @Riverside, @CapturedOn)";
 
                 var result = await conn.ExecuteAsync(insertQuery, trace);
             }
