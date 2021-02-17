@@ -2,6 +2,9 @@ name: .NET Core
 
 on: [push]
 
+env:
+  DOTNET_VERSION: '3.1.301'
+
 jobs:
   build:
 
@@ -9,15 +12,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Setup .NET Core
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Setup Nuget.exe
-      uses: warrenbuckley/Setup-Nuget@v1
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+
     - name: Restore NuGet packages
-      run: nuget restore ./Surfrider.PlasticOrigins.Backend.Mobile.sln
+      run: nuget restore Surfrider.PlasticOrigins.Backend.Mobile.sln
+
     - name: Build with dotnet
       run: dotnet build --configuration Release
+
     - name: Test with dotnet
       run: dotnet test ./Surfrider.PlasticOrigins.Backend.Mobile.sln --configuration Release
