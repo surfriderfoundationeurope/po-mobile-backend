@@ -11,13 +11,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
 #if DEBUG
             builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
-            builder.Services.AddSingleton<IImageStore, PostgresqlImageStore>();
 #else
             //builder.Services.AddSingleton<IUserStore, SqlUserStore>();
             builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
-            builder.Services.AddSingleton<IImageStore, PostgresqlImageStore>();
 #endif
-
+            builder.Services.AddSingleton<IImageStore, PostgresqlImageStore>();
             builder.Services.AddSingleton<IConfigurationService, EnvironmentConfigurationService>();
             builder.Services.AddSingleton<IUserService, UserService>();
             builder.Services.AddSingleton<IImageService, ImageService>();

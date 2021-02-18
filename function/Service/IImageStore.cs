@@ -13,6 +13,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<IEnumerable<ImageAnnotationBoundingBox>> GetBBoxForOneImage(Guid id);
         Task<IEnumerable<TrashType>> GetTrashTypes();
         Task<bool> AnnotateImage(ImageAnnotationBoundingBoxResult aBbox);
-        Task<bool> UpdateImageData(ImageLabelResult img);
+        Task<bool> UpdateImageData(ImageLabelViewModel img);
     }
 }

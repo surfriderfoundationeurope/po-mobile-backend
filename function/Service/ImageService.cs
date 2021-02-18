@@ -24,7 +24,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public Task<IEnumerable<TrashType>> GetTrashTypes();
         public Task<IEnumerable<ImageAnnotationBoundingBox>> GetImageBBox(Guid id);
         public Task<bool> AnnotateImage(ImageAnnotationBoundingBoxResult aBbox);
-        public Task<bool> UpdateImageData(ImageLabelResult img);
+        public Task<bool> UpdateImageData(ImageLabelViewModel img);
     }
 
     internal class ImageService : IImageService
@@ -65,7 +65,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         {
             return await _imageStore.AnnotateImage(aBbox);
         }
-        public async Task<bool> UpdateImageData(ImageLabelResult img)
+        public async Task<bool> UpdateImageData(ImageLabelViewModel img)
         {
             return await _imageStore.UpdateImageData(img);
         }

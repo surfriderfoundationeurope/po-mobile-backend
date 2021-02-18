@@ -36,9 +36,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation($"Get Image {fileName}");
 
-            if (accessTokenResult.Status != AccessTokenStatus.Valid)
-                return null;
-
             return GetImage(blobContainer, fileName);
         }
 
@@ -67,8 +64,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation($"Get Trash Types");
 
-            if (accessTokenResult.Status != AccessTokenStatus.Valid)
-                return null;
             IEnumerable<TrashType> result = await _imageService.GetTrashTypes();
             return (ActionResult)new OkObjectResult(result);
         }
@@ -83,10 +78,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation($"Get Random Image");
 
-            if (accessTokenResult.Status != AccessTokenStatus.Valid)
-                return null;
             ImageLabel result = await _imageService.GetOneImageRandom(blobContainer);
-            return (ActionResult)new OkObjectResult(new ImageLabelResult(result));
+            return (ActionResult)new OkObjectResult(new ImageLabelViewModel(result));
         }
 
         [FunctionName("AnnotateImage")]
@@ -98,8 +91,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Annotate Image");
 
-            if (accessTokenResult.Status != AccessTokenStatus.Valid)
-                return new UnauthorizedResult();
             var body = await new StreamReader(req.Body).ReadToEndAsync();
             ImageAnnotationBoundingBoxResult imgBBox = JsonSerializer.Deserialize<ImageAnnotationBoundingBoxResult>(body);
             var result = await _imageService.AnnotateImage(imgBBox);
@@ -120,7 +111,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
             var body = await new StreamReader(req.Body).ReadToEndAsync();
-            ImageLabelResult img= JsonSerializer.Deserialize<ImageLabelResult>(body);
+            ImageLabelViewModel img= JsonSerializer.Deserialize<ImageLabelViewModel>(body);
             var result = await _imageService.UpdateImageData(img);
             if (result)
                 return new StatusCodeResult(200);
@@ -136,7 +127,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 Permissions = SharedAccessBlobPermissions.Read,
                 SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(45)
             };
-            string sas = blobContainer.GetSharedAccessSignature(sharedAccessPolicy);
+            string sas = traceAttachmentBlob.GetSharedAccessSignature(sharedAccessPolicy);
 
             return $"{traceAttachmentBlob.Uri.AbsoluteUri}{sas}";
         }

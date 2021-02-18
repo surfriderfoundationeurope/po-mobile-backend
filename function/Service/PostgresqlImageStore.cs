@@ -68,7 +68,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 throw e;
             }
         }
-        public async Task<bool> UpdateImageData(ImageLabelResult img)
+        public async Task<bool> UpdateImageData(ImageLabelViewModel img)
         {
             try
             {

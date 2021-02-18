@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.ViewModel
 {
-    public class ImageLabelResult
+    public class ImageLabelViewModel
     {
         public Guid ImageId { get; set; }
         public Guid CreatorId { get; set; }
@@ -17,11 +17,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.ViewModel
         public string Url { get; set; }
         public IEnumerable<ImageAnnotationBoundingBox> bbox { get; set; }
 
-        public ImageLabelResult()
+        public ImageLabelViewModel()
         {
 
         }
-        public ImageLabelResult(ImageLabel imageLabel)
+        public ImageLabelViewModel(ImageLabel imageLabel)
         {
             ImageId = imageLabel.Id;
             CreatorId = imageLabel.Id_creator_fk;
