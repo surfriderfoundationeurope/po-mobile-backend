@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Surfrider.PlasticOrigins.Backend.Mobile.Service;
+using System.Linq;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 {
@@ -17,7 +19,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             _traceStore = traceStore;
         }
 
-        public async Task AddTrace(string userId, TraceViewModel trace )
+        public async Task AddTrace(string userId, TraceViewModel trace)
         {
             // ID
             // locomotion = move
@@ -35,10 +37,26 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             dbTrace.UserId = Guid.Parse(userId);
             dbTrace.Riverside = trace.bank.ToLower().Replace("bank", "");
             dbTrace.CapturedOn = trace.date;
+            dbTrace.Remark = trace.comment;
 
             // Save to DB
-            await _traceStore.Create(dbTrace);
-            
+            await _traceStore.CreateCampaign(dbTrace);
+
+            // Upload to blob storage
+
+        }
+        public async Task AddTrajectoryPoints(TraceViewModel trace)
+        {
+            List<Position> positions = trace.positions.Select(p => new Position(p)).ToList();
+            positions.ForEach(p =>
+            {
+                p.Id = Guid.NewGuid();
+                p.RefCampaign = Guid.Parse(trace.id);
+                p.Createdon = DateTime.Now;
+            });
+            // Save to DB
+            await _traceStore.CreateTrajectoryPoints(positions);
+
             // Upload to blob storage
 
         }
@@ -53,14 +71,24 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             _configService = configService;
         }
 
-        public async Task Create(Trace trace)
+        public async Task CreateCampaign(Trace trace)
         {
             using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
             {
                 await conn.OpenAsync();
-                string insertQuery = "INSERT INTO campaign.\"campaign\" (id, locomotion, isaidriven, id_ref_user_fk, riverside, createdon) VALUES (@Id, @Locomotion, @IsAiDriven, @UserId, @Riverside, @CapturedOn)";
+                string insertQuery = "INSERT INTO campaign.\"campaign\" (id, locomotion, isaidriven, remark, id_ref_user_fk, riverside, createdon) VALUES (@Id, @Locomotion, @IsAiDriven, @Remark, @UserId, @Riverside, @CapturedOn)";
 
                 var result = await conn.ExecuteAsync(insertQuery, trace);
+            }
+        }
+        public async Task CreateTrajectoryPoints(IEnumerable<Position> positions)
+        {
+            using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
+            {
+                await conn.OpenAsync();
+                string insertQuery = "INSERT INTO campaign.\"trajectory_point\" (id, id_ref_campaign_fk, \"time\", lat, lon, createdon) VALUES (@Id, @RefCampaign, @Time, @Lat, @Lon, @Createdon)";
+
+                var result = await conn.ExecuteAsync(insertQuery, positions);
             }
         }
     }
