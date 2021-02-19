@@ -16,15 +16,11 @@ jobs:
     - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
       uses: actions/setup-dotnet@v1
       with:
-<<<<<<< HEAD
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Setup NuGet
       uses: nuget/setup-nuget@v1
 
-=======
-        dotnet-version: 3.1.101
->>>>>>> 31850ba (Update dotnetcore.yml)
     - name: Restore NuGet packages
       run: nuget restore Surfrider.PlasticOrigins.Backend.Mobile.sln
 
