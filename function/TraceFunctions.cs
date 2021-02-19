@@ -11,40 +11,92 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
+using System.Security.Cryptography;
+using System.Text;
+using Azure.Storage.Blobs;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
     public class TraceFunctions
     {
         private TraceService _traceService;
+        private IMediaStore _mediaStore;
 
-        public TraceFunctions(TraceService traceService)
+        public TraceFunctions(TraceService traceService, IMediaStore mediaStore)
         {
             _traceService = traceService;
+            _mediaStore = mediaStore;
         }
 
         [FunctionName("UploadTraceAttachment")]
-        public  async Task<IActionResult> RunUploadTraceAttachment(
+        public async Task<IActionResult> RunUploadTraceAttachment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
-            [Blob("trace-attachments", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerManual,
+            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerMobile,
+            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerGoPro,
             [AccessToken] AccessTokenResult accessTokenResult,
             string traceId,
             string fileName,
-            ILogger log
+            ILogger log,
+            [Blob("manual/{traceId}.json", FileAccess.Read)] Stream traceManualIdJsonFile = null,
+            [Blob("mobile/{traceId}.json", FileAccess.Read)] Stream traceMobileIdJsonFile = null,
+            [Blob("gopro/{traceId}.json", FileAccess.Read)] Stream traceGoProIdJsonFile = null
         )
         {
             log.LogInformation("Trace Attachment file");
 
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
+            Stream jsonStream;
+            if (traceManualIdJsonFile != null)
+            {
+                jsonStream = traceManualIdJsonFile;
+            }
+            else
+            {
+                if (traceMobileIdJsonFile != null)
+                    jsonStream = traceMobileIdJsonFile;
+                else
+                {
+                    if (traceGoProIdJsonFile != null)
+                        jsonStream = traceGoProIdJsonFile;
+                    else
+                        return new UnauthorizedResult();
+                }
 
-            string name = $"{accessTokenResult.User.Id}/{traceId}/{fileName}";
+            }
+            var trace = await new StreamReader(jsonStream).ReadToEndAsync();
+            TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(trace);
 
-            var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
 
+            //ecrire dans le bon blob
+
+            string name = $"{traceId}{Path.GetExtension(fileName)}";
+            Guid mediaId = Guid.NewGuid();
+
+            CloudBlockBlob traceAttachmentBlob = blobContainerManual.GetBlockBlobReference(name);
+            if (traceVm.trackingMode.ToLower() == "automatic")
+            {
+                traceAttachmentBlob = blobContainerMobile.GetBlockBlobReference(name);
+            }
+            if (traceVm.trackingMode.ToLower() == "gopro")
+            {
+                traceAttachmentBlob = blobContainerGoPro.GetBlockBlobReference(name);
+            }
             traceAttachmentBlob.Properties.ContentType = req.ContentType;
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
+            traceAttachmentBlob.Metadata.Add("mediaId", mediaId.ToString());
             await traceAttachmentBlob.UploadFromStreamAsync(req.Body);
+
+            // Add to Media
+            try
+            {
+                await _mediaStore.AddMedia(mediaId, name, accessTokenResult.User.Id, traceId, DateTime.UtcNow, traceAttachmentBlob.Uri);
+            }
+            catch (Exception e)
+            {
+                log.LogError(e, "Unable to store media to DB");
+            }
 
             return new StatusCodeResult(200);
         }
@@ -52,8 +104,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("UploadTrace")]
         public async Task<IActionResult> RunUploadTrace(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace")] HttpRequest req,
-            [Blob("trace", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
-            [Blob("trace-attachments", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerAttachments,
+            [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerManual,
+            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerMobile,
+            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerGoPro,
             [AccessToken] AccessTokenResult accessTokenResult,
             ILogger log
         )
@@ -62,35 +115,54 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             log.LogInformation("Trace file");
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
-
             var body = await new StreamReader(req.Body).ReadToEndAsync();
             TraceViewModel traceVm = JsonSerializer.Deserialize<TraceViewModel>(body);
 
             /// Backup trace to storage account
-            string name = $"{DateTime.UtcNow.Year}/{DateTime.Now.Month}/{DateTime.UtcNow.Day}/{traceVm.id}.json";
+            string name = $"{traceVm.id}.json";
 
-            var traceAttachmentBlob = blobContainer.GetBlockBlobReference(name);
+            CloudBlockBlob traceAttachmentBlob = blobContainerManual.GetBlockBlobReference(name);
+            SharedAccessBlobPolicy sharedAccessPolicy = new SharedAccessBlobPolicy()
+            {
+                Permissions = SharedAccessBlobPermissions.Add | SharedAccessBlobPermissions.Create |
+                              SharedAccessBlobPermissions.Write,
+                SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(20)
+            };
+            string sas = blobContainerManual.GetSharedAccessSignature(sharedAccessPolicy);
+
+            if (traceVm.trackingMode.ToLower() == "automatic")
+            {
+                traceAttachmentBlob = blobContainerMobile.GetBlockBlobReference(name);
+                sas = blobContainerMobile.GetSharedAccessSignature(sharedAccessPolicy);
+            }
+            if (traceVm.trackingMode.ToLower() == "gopro")
+            {
+                traceAttachmentBlob = blobContainerGoPro.GetBlockBlobReference(name);
+                sas = blobContainerMobile.GetSharedAccessSignature(sharedAccessPolicy);
+            }
+
             traceAttachmentBlob.Properties.ContentType = "application/json";
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
             await traceAttachmentBlob.UploadTextAsync(body);
 
             // Insert it into PGSQL
+            try
+            {
+                await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
+            }
+            catch (Exception e)
+            {
+                log.LogError(e, "Unable to store media to DB");
+            }
 
-            await _traceService.AddTrace(accessTokenResult.User.Id, traceVm);
-            
+
             string attachmentPath = $"{accessTokenResult.User.Id}/{traceVm.id}/{{fileName}}";
 
-            var sas = blobContainerAttachments.GetSharedAccessSignature(new SharedAccessBlobPolicy()
-            {
-                Permissions = SharedAccessBlobPermissions.Add | SharedAccessBlobPermissions.Create |
-                              SharedAccessBlobPermissions.Write,
-                SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(20)
-            });
-            
+
             return new OkObjectResult(new
             {
                 traceId = traceVm.id,
-                uploadUri = $"{blobContainerAttachments.Uri.AbsoluteUri}/{attachmentPath}{sas}"
+                uploadUri = $"{traceAttachmentBlob.Uri.AbsoluteUri}{sas}"
             });
         }
     }
