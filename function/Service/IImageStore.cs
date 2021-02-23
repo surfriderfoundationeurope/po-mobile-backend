@@ -14,5 +14,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<IEnumerable<TrashType>> GetTrashTypes();
         Task<bool> AnnotateImage(ImageAnnotationBoundingBoxResult aBbox);
         Task<bool> UpdateImageData(ImageLabelViewModel img);
+        Task<bool> InsertImageData(ImageLabel img);
     }
 }

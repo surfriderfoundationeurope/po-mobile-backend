@@ -11,7 +11,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public Guid Id_creator_fk { get; set; }
         public DateTime Createdon { get; set; }
         public string FileName { get; set; }
-        public string ImageId { get; set; }
         public string View { get; set; }
         public string Image_Quality { get; set; }
         public string Context { get; set; }
@@ -21,16 +20,16 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public ImageLabel()
         { }
 
-        public ImageLabel(Guid id, Guid creatorId, DateTime createdOn, string fileName, string imageId, string view, string imgQuality, string context)
+        public ImageLabel(Guid id, Guid creatorId, DateTime createdOn, string fileName, string view, string imgQuality, string context, string url)
         {
-            SetValue(nameof(Id), id);
-            SetValue(nameof(Id_creator_fk), creatorId);
-            SetValue(nameof(Createdon), createdOn);
-            SetValue(nameof(FileName), fileName);
-            SetValue(nameof(ImageId), imageId);
-            SetValue(nameof(View), view);
-            SetValue(nameof(Image_Quality), imgQuality);
-            SetValue(nameof(Context), context);
+            Id = id;
+            Id_creator_fk = creatorId;
+            Createdon = createdOn;
+            FileName = fileName;
+            View = view;
+            Image_Quality = imgQuality;
+            Context = context;
+            Container_url = url;
         }
 
         protected override string GetEntityKey()

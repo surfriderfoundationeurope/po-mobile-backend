@@ -68,6 +68,38 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 throw e;
             }
         }
+        public async Task<bool> InsertImageData(ImageLabel img)
+        {
+            try
+            {
+                using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
+                {
+                    await conn.OpenAsync();
+                    var query = $"INSERT INTO label.\"images_for_labelling\" (id, id_creator_fk, createdon, filename, view, image_quality, context, container_url) VALUES (@Id, (SELECT id from campaign.\"user\" WHERE id=@UserId), @CreatedOn, @Filename, @View, @ImgQuality, @Context, @Url)";
+
+                    var result = await conn.ExecuteAsync(query,
+                        new
+                        {
+                            Id= img.Id,
+                            UserId= img.Id_creator_fk,
+                            View = img.View,
+                            Filename= img.FileName,
+                            ImgQuality = img.Image_Quality,
+                            Context = img.Context,
+                            Url= img.Container_url,
+                            @CreatedOn= img.Createdon
+
+                        }
+                    );
+
+                    return result > 0;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
         public async Task<bool> UpdateImageData(ImageLabelViewModel img)
         {
             try
@@ -75,7 +107,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
                 {
                     await conn.OpenAsync();
-                    Guid id = Guid.NewGuid();
                     var query = "UPDATE  label.\"images_for_labelling\" SET view = '@View', image_quality = '@ImgQuality', context = '@Context' WHERE id = '@imageId'";
 
                     var result = await conn.ExecuteAsync(query,

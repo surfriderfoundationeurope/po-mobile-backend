@@ -18,11 +18,13 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
     public class TraceFunctions
     {
-        private TraceService _traceService;
+        private IImageService _imageService;
         private IMediaStore _mediaStore;
+        private TraceService _traceService;
 
-        public TraceFunctions(TraceService traceService, IMediaStore mediaStore)
+        public TraceFunctions(TraceService traceService, IMediaStore mediaStore, IImageService imageService)
         {
+            _imageService = imageService;
             _traceService = traceService;
             _mediaStore = mediaStore;
         }
@@ -97,6 +99,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             try
             {
                 await _mediaStore.AddMedia(mediaId, name, accessTokenResult.User.Id, traceId, DateTime.UtcNow, traceAttachmentBlob.Uri);
+                ImageLabel imageToInsert = new ImageLabel(Guid.NewGuid(), Guid.Parse(accessTokenResult.User.Id), DateTime.Now, name, string.Empty, string.Empty, string.Empty, traceAttachmentBlob.Uri.AbsoluteUri);
+                if (traceVm.trackingMode.ToLower() == "manual")
+                {
+                    await _imageService.InsertImageData(imageToInsert);
+                }
+                
             }
             catch (Exception e)
             {
