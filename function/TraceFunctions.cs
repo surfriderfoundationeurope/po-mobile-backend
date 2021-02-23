@@ -7,13 +7,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
-using System.Security.Cryptography;
-using System.Text;
-using Azure.Storage.Blobs;
+using System.Linq;
+using System.Collections.Generic;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -31,7 +30,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("UploadTraceAttachment")]
         public async Task<IActionResult> RunUploadTraceAttachment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
-            [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerManual,
+            [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerImageToLabel,
             [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerMobile,
             [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerGoPro,
             [AccessToken] AccessTokenResult accessTokenResult,
@@ -70,19 +69,25 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
 
             //ecrire dans le bon blob
-
-            string name = $"{traceId}{Path.GetExtension(fileName)}";
+            string name = string.Empty;
             Guid mediaId = Guid.NewGuid();
-
-            CloudBlockBlob traceAttachmentBlob = blobContainerManual.GetBlockBlobReference(name);
+            CloudBlockBlob traceAttachmentBlob = null;
+            if (traceVm.trackingMode.ToLower() == "manual")
+            {
+                name = $"{await GetNextGileName(blobContainerImageToLabel, traceId)}{Path.GetExtension(fileName)}";
+                traceAttachmentBlob = blobContainerImageToLabel.GetBlockBlobReference(name);
+            }
             if (traceVm.trackingMode.ToLower() == "automatic")
             {
+                name = $"{await GetNextGileName(blobContainerMobile, traceId)}{Path.GetExtension(fileName)}";
                 traceAttachmentBlob = blobContainerMobile.GetBlockBlobReference(name);
             }
             if (traceVm.trackingMode.ToLower() == "gopro")
             {
+                name = $"{await GetNextGileName(blobContainerGoPro, traceId)}{Path.GetExtension(fileName)}";
                 traceAttachmentBlob = blobContainerGoPro.GetBlockBlobReference(name);
             }
+
             traceAttachmentBlob.Properties.ContentType = req.ContentType;
             traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
             traceAttachmentBlob.Metadata.Add("mediaId", mediaId.ToString());
@@ -156,20 +161,49 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 log.LogError(e, "Unable to store media to DB");
             }
 
-
-            string attachmentPath = $"{accessTokenResult.User.Id}/{traceVm.id}/{{fileName}}";
-
-
             return new OkObjectResult(new
             {
                 traceId = traceVm.id,
                 uploadUri = $"{traceAttachmentBlob.Uri.AbsoluteUri}{sas}"
             });
         }
+        private async Task<string> GetNextGileName(CloudBlobContainer blobContainer, string name)
+        {
+            string tempName = $"{name}";
+            List<string> list = new List<string>();
+            BlobContinuationToken blobContinuationToken = null;
+            do
+            {
+                var resultSegment = await blobContainer.ListBlobsSegmentedAsync(
+                    prefix: null,
+                    useFlatBlobListing: true,
+                    blobListingDetails: BlobListingDetails.None,
+                    maxResults: null,
+                    currentToken: blobContinuationToken,
+                    options: null,
+                    operationContext: null
+                );
+
+                // Get the value of the continuation token returned by the listing call.
+                blobContinuationToken = resultSegment.ContinuationToken;
+                foreach (IListBlobItem item in resultSegment.Results)
+                {
+
+                    list.Add(Path.GetFileNameWithoutExtension(item.Uri.LocalPath));
+
+                }
+            } while (blobContinuationToken != null);
+            int i = 1;
+
+            while (list.Any(fileName => tempName == fileName))
+            {
+                tempName = $"{name}({i})";
+                i++;
+            }
+
+
+            return tempName;
+        }
+
     }
-
-
-
-
-
 }
