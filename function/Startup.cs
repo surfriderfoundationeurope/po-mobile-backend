@@ -8,10 +8,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
     public class Startup : FunctionsStartup
     {
-        public void Configure(IApplicationBuilder app)
-        {
-            app.UseCors(options => options.AllowAnyOrigin());
-        }
         public override void Configure(IFunctionsHostBuilder builder)
         {
 #if DEBUG
@@ -38,7 +34,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 {
                     options.DefaultAuthenticateScheme = "Bearer";
                 });
-            services.AddCors(c => c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin()));
             //services.AddJwtBearer()
 
             //services.AddAuthentication(options =>
