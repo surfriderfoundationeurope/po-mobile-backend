@@ -39,15 +39,16 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             string traceId,
             string fileName,
             ILogger log,
-            [Blob("manual/{traceId}.json", FileAccess.Read)] Stream traceManualIdJsonFile = null,
-            [Blob("mobile/{traceId}.json", FileAccess.Read)] Stream traceMobileIdJsonFile = null,
-            [Blob("gopro/{traceId}.json", FileAccess.Read)] Stream traceGoProIdJsonFile = null
+            [Blob("manual/{traceId}.json", FileAccess.Read, Connection = "TraceStorage")] Stream traceManualIdJsonFile = null,
+            [Blob("mobile/{traceId}.json", FileAccess.Read, Connection = "TraceStorage")] Stream traceMobileIdJsonFile = null,
+            [Blob("gopro/{traceId}.json", FileAccess.Read, Connection = "TraceStorage")] Stream traceGoProIdJsonFile = null
         )
         {
             log.LogInformation("Trace Attachment file");
 
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
+
             Stream jsonStream;
             if (traceManualIdJsonFile != null)
             {
