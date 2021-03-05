@@ -15,6 +15,9 @@ Create a `local.settings.json` within the `functions` folder. Paste this content
 		"MailjetApiKey": "",
 		"MailjetApiSecret": "",
 		"BaseFunctionUrl": "http://localhost:7071"
+	},
+	"Host": {
+		"CORS": "*"
 	}
 }
 ```

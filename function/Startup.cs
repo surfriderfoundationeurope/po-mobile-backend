@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 
@@ -16,8 +17,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             builder.Services.AddSingleton<IUserStore, PostgresqlUserStore>();
 #endif
 
+            builder.Services.AddSingleton<IImageStore, PostgresqlImageStore>();
+            builder.Services.AddSingleton<IMediaStore, PostgresqlMediaStore>();
+
             builder.Services.AddSingleton<IConfigurationService, EnvironmentConfigurationService>();
             builder.Services.AddSingleton<IUserService, UserService>();
+            builder.Services.AddSingleton<IImageService, ImageService>();
             builder.Services.AddSingleton<TraceStore, TraceStore>();
             builder.Services.AddSingleton<TraceService, TraceService>();
         }
