@@ -138,16 +138,16 @@ Validate:[GET] /validate/{code}
 ### **Build the Project**
 
 ```shell
-donet restore 
+dotnet restore 
 ```
 ```shell
-donet build
+dotnet build
 ```
 
 ### **Launch the program**
 
 ```shell
-donet run 
+dotnet run 
 ```
 ```shell
 http://localhost:7071/
@@ -156,7 +156,7 @@ http://localhost:7071/
 ### **Test**
 
 ```shell
-donet test
+dotnet test
 ```
 
 ## **Contributing**
