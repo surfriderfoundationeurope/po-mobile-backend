@@ -1,10 +1,11 @@
-# po-mobile-backend
+<h1 align="left">po-mobile-backend</h1>
 
-<!--- OPTIONAL: You can add badges and shields to reflect the current status of the project, the licence it uses and if any dependencies it uses are up-to-date. Plus they look pretty cool! You can find a list of badges or design your own at https://shields.io/ --->
+<a href="https://www.plasticorigins.eu/"><img width="80px" src="https://github.com/surfriderfoundationeurope/The-Plastic-Origins-Project/blob/master/assets/PlasticOrigins_logo.png" width="5%" height="5%" align="left" hspace="0" vspace="0"></a>
 
-> *Proudly Powered by [Surfrider Foundation Europe](https://surfrider.eu/), this initiative is a part of [the Plastic Origin Project](https://www.plasticorigins.eu/) - a citizen science project that aims at mapping plastic pollution in european rivers and provide data to all stakeholders.\
-> Browse [@The-Plastic-Origins-Project](https://github.com/surfriderfoundationeurope/The-Plastic-Origins-Project) to know more about the project's initiatives*.
+  <p align="justify">Proudly Powered by <a href="https://surfrider.eu/">SURFRIDER Foundation Europe</a>, this open-source initiative is a part of the <a href="https://www.plasticorigins.eu/">PLASTIC ORIGINS</a> project - a citizen science project that uses AI to map plastic pollution in European rivers and share its data publicly. Browse the <a href="https://github.com/surfriderfoundationeurope/The-Plastic-Origins-Project">project repository</a> to know more about its initiatives and how you can get involved. Please consider starring :star: the project's repositories to show your interest and support. We rely on YOU for making this project a success and thank you in advance for your contributions.</p>
+
 _________________
+<!--- OPTIONAL: You can add badges and shields to reflect the current status of the project, the licence it uses and if any dependencies it uses are up-to-date. Plus they look pretty cool! You can find a list of badges or design your own at https://shields.io/ --->
 
 Welcome to the Plastic Origins 'all in one' backend that allows the Plastic Origins Mobile app (available on [Android](https://play.google.com/store/apps/details?id=com.plasticorigins&hl=fr&gl=US) & [IOS](https://apps.apple.com/fr/app/plastic-origins/id1532710998)) and Web app (data labelling tool  [www.trashroulette.com](https://www.trashroulette.com/#/)) to consume their main APIs that support:
 
@@ -178,8 +179,8 @@ If you experience any problems, please don't hesitate to ping:
 * [@benzinamohamedelyes](https://github.com/benzinamohamedelyes)
 * [@Vincent-Guiberteau](https://github.com/Vincent-Guiberteau)
 
-Special thanks to all our [Contributors](https://github.com/surfriderfoundationeurope/The-Plastic-Origins-Project).
+Special thanks to all our [Contributors](https://github.com/orgs/surfriderfoundationeurope/people).
 
 ## **License**
 
-We’re using the [GNU General Public License (GPL) version 3 - `GPLv3`](https://www.gnu.org/licenses/gpl-3.0.en.html) - a free, copyleft license for software and other kinds of works.
+We’re using the `MIT` License. For more details, check [`LICENSE`](https://github.com/surfriderfoundationeurope/po-mobile-backend/blob/main/LICENSE) file.
