@@ -28,7 +28,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("GetOneImage")]
         public string RunGetOneImage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/imgName/{fileName}")] HttpRequest req,
-            [Blob("testforlabelbackend", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
             string fileName,
             ILogger log
@@ -71,7 +71,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("GetRandomImage")]
         public async Task<IActionResult> RunGetRandomImage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/random")] HttpRequest req,
-            [Blob("testforlabelbackend", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
             ILogger log
         )
