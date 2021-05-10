@@ -2,17 +2,22 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.ViewModel
 {
     public class ImageAnnotationBoundingBoxResult
     {
+        [JsonIgnore]
         public Guid Id { get; set; }
         public Guid CreatorId { get; set; }
+        [JsonIgnore]
         public DateTime CreatedOn { get; set; }
         public int TrashId { get; set; }
         public Guid ImageId { get; set; }
+        [JsonPropertyName("location_x")]
         public int Location_x { get; set; }
+        [JsonPropertyName("location_y")]
         public int Location_y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
