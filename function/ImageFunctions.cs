@@ -114,8 +114,6 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Update Image Data");
 
-            if (accessTokenResult.Status != AccessTokenStatus.Valid)
-                return new UnauthorizedResult();
             var body = await new StreamReader(req.Body).ReadToEndAsync();
             ImageLabelViewModel img= JsonSerializer.Deserialize<ImageLabelViewModel>(body);
             var result = await _imageService.UpdateImageData(img);
