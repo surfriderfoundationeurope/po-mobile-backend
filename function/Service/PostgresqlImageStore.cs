@@ -107,7 +107,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
                 {
                     await conn.OpenAsync();
-                    var query = "UPDATE  label.\"images_for_labelling\" SET view = '@View', image_quality = '@ImgQuality', context = '@Context' WHERE id = '@imageId'";
+                    var query = "UPDATE label.\"images_for_labelling\" SET view = '@View', image_quality = '@ImgQuality', context = '@Context' WHERE id = @ImageId";
 
                     var result = await conn.ExecuteAsync(query,
                         new
