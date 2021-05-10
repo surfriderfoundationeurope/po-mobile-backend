@@ -44,7 +44,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 {
                     await conn.OpenAsync();
                     Guid id = Guid.NewGuid();
-                    var insertQuery = "INSERT INTO FROM label.\"bounding_boxes\" VALUES ( @Id, @CreatorId, current_timestamp, @TrashId, @ImageId, @Location_x, @Location_y, @Width, @Height)";
+                    var insertQuery = "INSERT INTO label.\"bounding_boxes\" (id, id_creator_fk, createdon, id_ref_trash_type_fk, id_ref_images_for_labelling, location_x, location_y, width, height) VALUES ( @Id, @CreatorId, current_timestamp, @TrashId, @ImageId, @Location_x, @Location_y, @Width, @Height)";
      
                     var result = await conn.ExecuteAsync(insertQuery,
                         new
