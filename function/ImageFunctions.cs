@@ -91,8 +91,14 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation("Annotate Image");
 
+            var options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true,
+                PropertyNameCaseInsensitive = true
+            };
+
             var body = await new StreamReader(req.Body).ReadToEndAsync();
-            ImageAnnotationBoundingBoxResult imgBBox = JsonSerializer.Deserialize<ImageAnnotationBoundingBoxResult>(body);
+            ImageAnnotationBoundingBoxResult imgBBox = JsonSerializer.Deserialize<ImageAnnotationBoundingBoxResult>(body, options);
             var result = await _imageService.AnnotateImage(imgBBox);
             if (result)
                 return new StatusCodeResult(200);
