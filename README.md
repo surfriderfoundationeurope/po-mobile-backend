@@ -43,7 +43,7 @@ Create a `local.settings.json` within the `functions` folder. Paste this content
 {
 	"IsEncrypted": false,
 	"Values": {
-		"AzureWebJobsTraceStorage": "UseDevelopmentStorage=true;",
+		"TraceStorage": "UseDevelopmentStorage=true;",
 		"AzureWebJobsStorage": "UseDevelopmentStorage=true;",
 		"JwtTokenKey": "jsutAVeryLongRandomString",
 		"PostgresqlDbConnectionString": "",
@@ -56,6 +56,9 @@ Create a `local.settings.json` within the `functions` folder. Paste this content
 	}
 }
 ```
+
+- Replace `TraceStorage` value with either the local Azure Storage Explorer emulator (or Azurite container), or the development storage account
+- Replace `AzureWebJobsStorage` value with  the local Azure Storage Explorer emulator (or Azurite container).
 
 Remarks: MailjetApiKeys are only required for sending emails.
 
