@@ -54,9 +54,6 @@ Create a `local.settings.json` within the `functions` folder. Paste this content
 	"Host": {
 		"CORS": "*"
 	}
-	"Host": {
-		"CORS": "*"
-	}
 }
 ```
 
