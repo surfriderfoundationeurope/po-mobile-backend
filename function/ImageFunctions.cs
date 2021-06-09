@@ -115,7 +115,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             log.LogInformation("Update Image Data");
 
             var body = await new StreamReader(req.Body).ReadToEndAsync();
-            ImageLabelViewModel img= JsonSerializer.Deserialize<ImageLabelViewModel>(body);
+            var options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true,
+                PropertyNameCaseInsensitive = true
+            };
+            ImageLabelViewModel img= JsonSerializer.Deserialize<ImageLabelViewModel>(body, options);
             var result = await _imageService.UpdateImageData(img);
             if (result)
                 return new StatusCodeResult(200);
