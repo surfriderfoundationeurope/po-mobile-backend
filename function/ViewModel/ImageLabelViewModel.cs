@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile.ViewModel
 {
@@ -9,6 +10,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.ViewModel
     {
         public Guid ImageId { get; set; }
         public Guid CreatorId { get; set; }
+        [JsonIgnore]
         public DateTime CreatedOn { get; set; }
         public string Filename { get; set; }
         public string View { get; set; }
