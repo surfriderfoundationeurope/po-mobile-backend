@@ -156,7 +156,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 using (var conn = new Npgsql.NpgsqlConnection(_configService.GetValue(ConfigurationServiceWellKnownKeys.PostgresqlDbConnectionString)))
                 {
                     string query = "SELECT * FROM label.\"images_for_labelling\" WHERE view = '' ORDER BY random() LIMIT 1";
-                    string query2 = "SELECT * FROMlabel.\"images_for_labelling\" ORDER BY random() LIMIT 1";
+                    string query2 = "SELECT * FROM label.\"images_for_labelling\" ORDER BY random() LIMIT 1";
                     
                     await conn.OpenAsync();
                     var result = await conn.QueryAsync<ImageLabel>(query);
