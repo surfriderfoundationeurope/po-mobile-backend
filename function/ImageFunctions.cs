@@ -7,12 +7,13 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
+using Azure.Storage.Blobs;
+using Azure.Storage.Sas;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -28,7 +29,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("GetOneImage")]
         public string RunGetOneImage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/imgName/{fileName}")] HttpRequest req,
-            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] BlobContainerClient blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
             string fileName,
             ILogger log
@@ -71,7 +72,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("GetRandomImage")]
         public async Task<IActionResult> RunGetRandomImage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/random")] HttpRequest req,
-            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] CloudBlobContainer blobContainer,
+            [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] BlobContainerClient blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
             ILogger log
         )
@@ -128,17 +129,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 return new StatusCodeResult(500);
         }
 
-        public static string GetImage(CloudBlobContainer blobContainer, string fileName)
+        public static string GetImage(BlobContainerClient blobContainer, string fileName)
         {
-            CloudBlockBlob traceAttachmentBlob = blobContainer.GetBlockBlobReference(fileName); ;
-            SharedAccessBlobPolicy sharedAccessPolicy = new SharedAccessBlobPolicy()
-            {
-                Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(45)
-            };
-            string sas = traceAttachmentBlob.GetSharedAccessSignature(sharedAccessPolicy);
+            var traceAttachmentBlob = blobContainer.GetBlobClient(fileName);
+            var sas = traceAttachmentBlob.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.Now.AddMinutes(45));
 
-            return $"{traceAttachmentBlob.Uri.AbsoluteUri}{sas}";
+            return sas.AbsoluteUri;
         }
     }
 }

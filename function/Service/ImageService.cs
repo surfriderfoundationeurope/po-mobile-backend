@@ -1,18 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Jose;
-using Mailjet.Client;
-using Mailjet.Client.Resources;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Extensions.Primitives;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Azure.Storage.Blobs;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
 
 [assembly: InternalsVisibleTo("Surfrider.PlasticOrigins.Backend.Mobile.Tests")]
@@ -20,7 +10,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 {
     public interface IImageService
     {
-        public Task<ImageLabel> GetOneImageRandom(CloudBlobContainer container);
+        public Task<ImageLabel> GetOneImageRandom(BlobContainerClient container);
         public Task<IEnumerable<TrashType>> GetTrashTypes();
         public Task<IEnumerable<ImageAnnotationBoundingBox>> GetImageBBox(Guid id);
         public Task<bool> AnnotateImage(ImageAnnotationBoundingBoxResult aBbox);
@@ -47,7 +37,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             
             return await _imageStore.GetTrashTypes();
         }
-        public async Task<ImageLabel> GetOneImageRandom(CloudBlobContainer container)
+        public async Task<ImageLabel> GetOneImageRandom(BlobContainerClient container)
         {
             ImageLabel image = await _imageStore.GetARandomImage();
 
