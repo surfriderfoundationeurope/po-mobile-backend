@@ -12,8 +12,11 @@ using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.OpenApi.Models;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -26,8 +29,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             _imageService = imageService;
         }
 
-        [FunctionName("GetOneImage")]
-        public string RunGetOneImage(
+        [FunctionName(nameof(GetOneImage))]
+        [OpenApiOperation(operationId: nameof(GetOneImage), tags: new[] { "Image Labelling" }, Description = "Gets an image URL based on name.")]
+        [OpenApiParameter(name: "fileName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The filename of the image to get")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "text/plain", bodyType: typeof(string), Description = "The URL of the image")]
+        public string GetOneImage(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/imgName/{fileName}")] HttpRequest req,
             [Blob("images2label", FileAccess.Read, Connection = "TraceStorage")] BlobContainerClient blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
@@ -40,8 +46,12 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             return GetImage(blobContainer, fileName);
         }
 
-        [FunctionName("GetImageBBox")]
-        public async Task<IActionResult> RunGetImageBBox(
+        [FunctionName(nameof(GetImageBBox))]
+        [OpenApiOperation(operationId: nameof(GetOneImage), tags: new[] { "Image Labelling" })]
+        [OpenApiParameter(name: "i;qgeId", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The ID of the image")]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(ImageAnnotationBoundingBox), Description = "An object representing the existing building box.")]
+
+        public async Task<IActionResult> GetImageBBox(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/bbox/{imageId}")] HttpRequest req,
             [AccessToken] AccessTokenResult accessTokenResult,
              string imageId,

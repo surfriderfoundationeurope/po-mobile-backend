@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
@@ -34,8 +36,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             _configurationService = configurationService;
         }
 
-        [FunctionName("Register")]
-        public async Task<IActionResult> RunRegister(
+        [FunctionName(nameof(Register))]
+        [OpenApiOperation(operationId: nameof(Register), tags: new[] { "User management" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType:typeof(RegisterViewModel))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "An object representing the created user and an access token.")]
+        public async Task<IActionResult> Register(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "register")] HttpRequest req,
             ExecutionContext context,
             ILogger log)
