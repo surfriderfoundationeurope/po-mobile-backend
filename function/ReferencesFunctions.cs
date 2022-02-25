@@ -6,14 +6,20 @@ using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
     public static class ReferencesFunctions
     {
-        [FunctionName("ReferenceGetRiverDB")]
-        public static async Task<HttpResponseMessage> RunGetRiversDB(
+        [FunctionName(nameof(GetRiversDB))]
+        [OpenApiOperation(operationId: nameof(GetRiversDB), tags: new[] { "Reference data" })]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "An object representing all the rivers.")]
+
+        public static async Task<HttpResponseMessage> GetRiversDB(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "reference/rivers")] HttpRequest req,
             ExecutionContext context,
             ILogger log)
