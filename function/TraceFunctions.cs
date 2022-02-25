@@ -10,8 +10,10 @@ using Microsoft.Extensions.Logging;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth;
 using Surfrider.PlasticOrigins.Backend.Mobile.Service;
 using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
-using System.Linq;
 using System.Collections.Generic;
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Sas;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
@@ -32,9 +34,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("UploadTraceAttachment")]
         public async Task<IActionResult> RunUploadTraceAttachment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
-            [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerImageToLabel,
-            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerMobile,
-            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerGoPro,
+            [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerImageToLabel,
+            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerMobile,
+            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerGoPro,
             [AccessToken] AccessTokenResult accessTokenResult,
             string traceId,
             string fileName,
@@ -72,28 +74,32 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             //ecrire dans le bon blob
             string name = string.Empty;
             Guid mediaId = Guid.NewGuid();
-            CloudBlockBlob traceAttachmentBlob = null;
+            BlobClient traceAttachmentBlob = null;
             string extension = Path.GetExtension(fileName);
             if (traceVm.trackingMode.ToLower() == "manual")
             {
                 name = await GetNextFileName(blobContainerImageToLabel, traceId, extension);
-                traceAttachmentBlob = blobContainerImageToLabel.GetBlockBlobReference(name);
+                traceAttachmentBlob = blobContainerImageToLabel.GetBlobClient(name);
             }
             if (traceVm.trackingMode.ToLower() == "automatic")
             {
                 name = await GetNextFileName(blobContainerMobile, traceId, extension);
-                traceAttachmentBlob = blobContainerMobile.GetBlockBlobReference(name);
+                traceAttachmentBlob = blobContainerMobile.GetBlobClient(name);
             }
             if (traceVm.trackingMode.ToLower() == "gopro")
             {
                 name = await GetNextFileName(blobContainerGoPro, traceId, extension);
-                traceAttachmentBlob = blobContainerGoPro.GetBlockBlobReference(name);
+                traceAttachmentBlob = blobContainerGoPro.GetBlobClient(name);
             }
 
-            traceAttachmentBlob.Properties.ContentType = req.ContentType;
-            traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
-            traceAttachmentBlob.Metadata.Add("mediaId", mediaId.ToString());
-            await traceAttachmentBlob.UploadFromStreamAsync(req.Body);
+            Dictionary<string, string> blobMetadata = new Dictionary<string, string>();
+            blobMetadata.Add("uid", accessTokenResult.User.Id);
+            blobMetadata.Add("mediaId", mediaId.ToString());
+            
+            await traceAttachmentBlob.UploadAsync(req.Body);
+            await traceAttachmentBlob.SetHttpHeadersAsync(new BlobHttpHeaders() {ContentType = req.ContentType});
+            await traceAttachmentBlob.SetMetadataAsync(blobMetadata);
+
 
             // Add to Media
             try
@@ -117,9 +123,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName("UploadTrace")]
         public async Task<IActionResult> RunUploadTrace(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace")] HttpRequest req,
-            [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerManual,
-            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerMobile,
-            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] CloudBlobContainer blobContainerGoPro,
+            [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerManual,
+            [Blob("mobile", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerMobile,
+            [Blob("gopro", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerGoPro,
             [AccessToken] AccessTokenResult accessTokenResult,
             ILogger log
         )
@@ -134,29 +140,37 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             /// Backup trace to storage account
             string name = $"{traceVm.id}.json";
 
-            CloudBlockBlob traceAttachmentBlob = blobContainerManual.GetBlockBlobReference(name);
+            BlobClient traceAttachmentBlob = blobContainerManual.GetBlobClient(name);
             SharedAccessBlobPolicy sharedAccessPolicy = new SharedAccessBlobPolicy()
             {
                 Permissions = SharedAccessBlobPermissions.Add | SharedAccessBlobPermissions.Create |
                               SharedAccessBlobPermissions.Write,
                 SharedAccessExpiryTime = DateTimeOffset.Now.AddMinutes(20)
             };
-            string sas = blobContainerManual.GetSharedAccessSignature(sharedAccessPolicy);
+            string sas = traceAttachmentBlob.GenerateSasUri(
+                BlobSasPermissions.Add | BlobSasPermissions.Create | BlobSasPermissions.Write,
+                DateTimeOffset.Now.AddMinutes(20)).AbsoluteUri;
 
             if (traceVm.trackingMode.ToLower() == "automatic")
             {
-                traceAttachmentBlob = blobContainerMobile.GetBlockBlobReference(name);
-                sas = blobContainerMobile.GetSharedAccessSignature(sharedAccessPolicy);
-            }
-            if (traceVm.trackingMode.ToLower() == "gopro")
-            {
-                traceAttachmentBlob = blobContainerGoPro.GetBlockBlobReference(name);
-                sas = blobContainerMobile.GetSharedAccessSignature(sharedAccessPolicy);
+                traceAttachmentBlob = blobContainerMobile.GetBlobClient(name);
+                sas = traceAttachmentBlob.GenerateSasUri(
+                    BlobSasPermissions.Add | BlobSasPermissions.Create | BlobSasPermissions.Write,
+                    DateTimeOffset.Now.AddMinutes(20)).AbsoluteUri;
             }
 
-            traceAttachmentBlob.Properties.ContentType = "application/json";
-            traceAttachmentBlob.Metadata.Add("uid", accessTokenResult.User.Id);
-            await traceAttachmentBlob.UploadTextAsync(body);
+            if (traceVm.trackingMode.ToLower() == "gopro")
+            {
+                traceAttachmentBlob = blobContainerGoPro.GetBlobClient(name);
+                sas = traceAttachmentBlob.GenerateSasUri(
+                    BlobSasPermissions.Add | BlobSasPermissions.Create | BlobSasPermissions.Write,
+                    DateTimeOffset.Now.AddMinutes(20)).AbsoluteUri;
+            }
+
+            
+            await traceAttachmentBlob.UploadAsync(body);
+            await traceAttachmentBlob.SetHttpHeadersAsync(new BlobHttpHeaders() { ContentType = "application/json" });
+            await traceAttachmentBlob.SetMetadataAsync(new Dictionary<string, string> { { "uid", accessTokenResult.User.Id } });
 
             // Insert it into PGSQL
             try
@@ -175,32 +189,22 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 uploadUri = $"{traceAttachmentBlob.Uri.AbsoluteUri}{sas}"
             });
         }
-        private async Task<string> GetNextFileName(CloudBlobContainer blobContainer, string name, string extension)
+
+        private async Task<string> GetNextFileName(BlobContainerClient blobContainer, string name, string extension)
         {
             string tempName = $"{name}";
             if (extension != ".mp4")
             {
                 List<string> list = new List<string>();
-                BlobContinuationToken blobContinuationToken = null;
-                do
-                {
-                    var resultSegment = await blobContainer.ListBlobsSegmentedAsync(
-                        prefix: name,
-                        useFlatBlobListing: true,
-                        blobListingDetails: BlobListingDetails.None,
-                        maxResults: null,
-                        currentToken: blobContinuationToken,
-                        options: null,
-                        operationContext: null
-                    );
 
-                    // Get the value of the continuation token returned by the listing call.
-                    blobContinuationToken = resultSegment.ContinuationToken;
-                    foreach (IListBlobItem item in resultSegment.Results)
-                    {
-                        list.Add(Path.GetFileNameWithoutExtension(item.Uri.LocalPath));
-                    }
-                } while (blobContinuationToken != null);
+
+
+                IAsyncEnumerable<BlobItem> results = blobContainer.GetBlobsAsync(prefix: name);
+                await foreach (BlobItem item in results)
+                {
+                    list.Add(Path.GetFileNameWithoutExtension(item.Name));
+                }
+
                 int i = 1;
 
                 while (list.Exists(fileName => tempName == fileName))
@@ -209,6 +213,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     i++;
                 }
             }
+
             return tempName + extension;
         }
     }
