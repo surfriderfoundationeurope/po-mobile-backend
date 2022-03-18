@@ -81,8 +81,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                 });
         }
 
-        [FunctionName("Login")]
-        public async Task<IActionResult> RunLogin(
+        [FunctionName(nameof(Login))]
+        [OpenApiOperation(operationId: nameof(Login), tags: new[] { "User management" })]
+        [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(LoginRequestViewModel))]
+        [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "An object containing an access token.")]
+        public async Task<IActionResult> Login(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "login")] HttpRequest req,
             ILogger log)
         {
