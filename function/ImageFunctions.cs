@@ -17,6 +17,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.OpenApi.Models;
+using Azure.Storage.Blobs.Models;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -116,6 +117,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             else
                 return new StatusCodeResult(500);
         }
+
         [FunctionName("UpdateImageData")]
         public async Task<IActionResult> RunUpdateImageData(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "images/update")] HttpRequest req,
@@ -146,5 +148,41 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             return sas.AbsoluteUri;
         }
+
+        [FunctionName(nameof(UploadImageForLabelling))]
+        [OpenApiOperation(operationId: nameof(UploadImageForLabelling), tags: new[] { "Image Labelling" }, Description = "Upload a single image so it can get labelled")]
+        [OpenApiParameter(name: "fileName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The filename of the image to get")]
+        [OpenApiSecurity("accessToken", SecuritySchemeType.Http, Name = "accessToken", In = OpenApiSecurityLocationType.Header)]
+        public async Task<string> UploadImageForLabelling(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/upload/{fileName}")] HttpRequest req,
+            [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainer,
+            [AccessToken] AccessTokenResult accessTokenResult,
+            string fileName,
+            ILogger log
+        )
+        {
+            log.LogInformation($"UploadImageForLabelling {fileName}");
+            
+            var imageName = $"{Guid.NewGuid}{Path.GetExtension(fileName)}";
+            var mediaId = Guid.NewGuid();
+
+            var  traceAttachmentBlob = blobContainer.GetBlobClient(imageName);
+            Dictionary<string, string> blobMetadata = new Dictionary<string, string>();
+            blobMetadata.Add("uid", accessTokenResult.User.Id);
+            blobMetadata.Add("mediaId", mediaId.ToString());
+            
+            await traceAttachmentBlob.UploadAsync(req.Body);
+            await traceAttachmentBlob.SetHttpHeadersAsync(new BlobHttpHeaders() {ContentType = req.ContentType});
+            await traceAttachmentBlob.SetMetadataAsync(blobMetadata);
+
+
+            ImageLabel imageToInsert = new ImageLabel(mediaId, Guid.Parse(accessTokenResult.User.Id), DateTime.Now, imageName, string.Empty, string.Empty, string.Empty, traceAttachmentBlob.Uri.AbsoluteUri);
+            await _imageService.InsertImageData(imageToInsert);
+
+            return "ok";
+        }
     }
+
+    
+
 }
