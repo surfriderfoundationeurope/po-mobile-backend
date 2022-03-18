@@ -23,7 +23,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
         public override List<OpenApiServer> Servers { get; set; } = new List<OpenApiServer>()
         {
-            new OpenApiServer() { Url = "https://api.dev.trashroulette.com" },
+            new OpenApiServer() { Url = "https://api.dev.trashroulette.com/" },
             new OpenApiServer() { Url = "https://api.trashroulette.com/" }
         };
 
