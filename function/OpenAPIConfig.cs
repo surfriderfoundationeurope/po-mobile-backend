@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Configurations;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
@@ -21,6 +22,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             }
         };
 
+        public override bool IncludeRequestingHostName => true;
+        
         public override List<OpenApiServer> Servers { get; set; } = new List<OpenApiServer>()
         {
             new OpenApiServer() { Url = "https://api.dev.trashroulette.com/" },

@@ -35,7 +35,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
                     _request.Headers[AuthHeaderName].ToString().StartsWith(BearerPrefix))
                 {
                     var token = _request.Headers[AuthHeaderName].ToString().Substring(BearerPrefix.Length);
-                    var decodedToken = await GetRawToken(_request, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+                    var decodedToken = GetRawToken(_request, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
 
                     if (decodedToken == null)
                         return AccessTokenResult.NoToken();
@@ -57,7 +57,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service.Auth
             return AccessTokenResult.NoToken();
         }
 
-        public static async Task<JwtTokenContent> GetRawToken(HttpRequest req, string signatureKey)
+        public static JwtTokenContent GetRawToken(HttpRequest req, string signatureKey)
         {
             // Get the token from the header
             if (

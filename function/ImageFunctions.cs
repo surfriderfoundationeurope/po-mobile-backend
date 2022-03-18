@@ -13,6 +13,7 @@ using Surfrider.PlasticOrigins.Backend.Mobile.ViewModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json.Serialization;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
@@ -106,7 +107,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             var options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 PropertyNameCaseInsensitive = true
             };
 
@@ -131,7 +132,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             var body = await new StreamReader(req.Body).ReadToEndAsync();
             var options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 PropertyNameCaseInsensitive = true
             };
             ImageLabelViewModel img= JsonSerializer.Deserialize<ImageLabelViewModel>(body, options);

@@ -19,7 +19,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiOperation(operationId: nameof(GetRiversDB), tags: new[] { "Reference data" })]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(string), Description = "An object representing all the rivers.")]
 
-        public static async Task<HttpResponseMessage> GetRiversDB(
+        public static HttpResponseMessage GetRiversDB(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "reference/rivers")] HttpRequest req,
             ExecutionContext context,
             ILogger log)

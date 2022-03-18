@@ -21,7 +21,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         Task<User> GetUserFromId(string registeredUserId);
         Task<bool> CheckUserCredentials(string email, string password);
         Task<string> GenerateTokenFromPassword(string email, string password);
-        Task<string> RefreshToken(JwtTokenContent token);
+        string RefreshToken(JwtTokenContent token);
         Task<bool> UpdatePassword(JwtTokenContent token, string password);
         Task SetAccountConfirmed(string userId);
         Task ResetPassword(string email);
@@ -123,7 +123,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             return token;
         }
 
-        public async Task<string> RefreshToken(JwtTokenContent token)
+        public string RefreshToken(JwtTokenContent token)
         {
             var newToken = GenerateUserToken(token.Email, DateTime.UtcNow.AddMinutes(_defaultTokenValidityPeriod), token.UserId);
             return newToken;
@@ -138,7 +138,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 await _userStore.UpdatePassword(token.UserId, passwordHash);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
