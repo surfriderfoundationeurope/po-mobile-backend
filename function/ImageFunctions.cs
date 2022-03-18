@@ -18,6 +18,7 @@ using Azure.Storage.Sas;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.OpenApi.Models;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -152,9 +153,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [FunctionName(nameof(UploadImageForLabelling))]
         [OpenApiOperation(operationId: nameof(UploadImageForLabelling), tags: new[] { "Image Labelling" }, Description = "Upload a single image so it can get labelled")]
         [OpenApiParameter(name: "fileName", In = ParameterLocation.Path, Required = true, Type = typeof(string), Description = "The filename of the image to get")]
-        [OpenApiSecurity("accessToken", SecuritySchemeType.Http, Name = "accessToken", In = OpenApiSecurityLocationType.Header)]
+        [OpenApiRequestBody(contentType: "image/jpeg", bodyType: typeof(object), Description = "The image contents.", Required = true)]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<string> UploadImageForLabelling(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "images/upload/{fileName}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "images/upload/{fileName}")] HttpRequest req,
             [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainer,
             [AccessToken] AccessTokenResult accessTokenResult,
             string fileName,
@@ -163,7 +165,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         {
             log.LogInformation($"UploadImageForLabelling {fileName}");
             
-            var imageName = $"{Guid.NewGuid}{Path.GetExtension(fileName)}";
+            var imageName = $"{Guid.NewGuid()}{Path.GetExtension(fileName)}";
             var mediaId = Guid.NewGuid();
 
             var  traceAttachmentBlob = blobContainer.GetBlobClient(imageName);
