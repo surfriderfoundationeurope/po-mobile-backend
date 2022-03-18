@@ -134,7 +134,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         }
 
         [FunctionName("RefreshToken")]
-        public async Task<IActionResult> RunRefreshToken(
+        public IActionResult RunRefreshToken(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "auth/refreshtoken")]
             HttpRequest req,
             [AccessToken] AccessTokenResult accessTokenResult,
@@ -145,9 +145,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
                 return new UnauthorizedResult();
 
-            JwtTokenContent rawToken = await AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+            JwtTokenContent rawToken = AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
 
-            var newToken = await _userService.RefreshToken(rawToken);
+            var newToken = _userService.RefreshToken(rawToken);
             return (ActionResult)new OkObjectResult(
                 new
                 {
@@ -171,7 +171,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
 
             var updatePasswordViewModel = JsonConvert.DeserializeObject<UpdatePasswordViewModel>(await req.ReadAsStringAsync());
 
-            JwtTokenContent rawToken = await AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
+            JwtTokenContent rawToken = AccessTokenValueProvider.GetRawToken(req, _configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey));
 
             await _userService.UpdatePassword(rawToken, updatePasswordViewModel.Password);
 
@@ -183,7 +183,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         }
 
         [FunctionName("ResetAccountForm")]
-        public async Task<HttpResponseMessage> RunResetAccountForm(
+        public HttpResponseMessage RunResetAccountForm(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "auth/reset")] HttpRequest req,
             ExecutionContext context,
             ILogger log)
@@ -215,7 +215,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             {
                 await _userService.ResetPassword(col["user_email"]);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 
             }
