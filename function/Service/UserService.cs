@@ -183,6 +183,13 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
         private async Task SendEmail(string to, string content, string textContent, string subject)
         {
+
+            if (string.IsNullOrWhiteSpace(_mailJetApiKey) || string.IsNullOrWhiteSpace(_mailjetApiSecret))
+            {
+                Console.WriteLine("No email configured, skipping email sending.");
+                return;
+            }
+
             MailjetClient client = new MailjetClient(_mailJetApiKey,_mailjetApiSecret)
             {
                 Version = ApiVersion.V3_1,
