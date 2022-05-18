@@ -56,7 +56,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             )
         {
             if (accessTokenResult.Status != AccessTokenStatus.Valid)
+            {
+                log.LogWarning($"Access token invalid: {accessTokenResult.Status}");
                 return new UnauthorizedResult();
+            }
+              
 
             var traceAttachmentDetails = new TraceAttachmentUploadDetailsViewModel() { TraceId = traceId };
 
