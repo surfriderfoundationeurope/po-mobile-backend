@@ -16,6 +16,7 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 
@@ -41,6 +42,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiParameter("traceId", In = ParameterLocation.Path, Description = "The Trace Id associated with this attachment")]
         [OpenApiParameter("fileName", In = ParameterLocation.Path, Description = "The name of the file uploaded. Used to determine attachment type (jpeg, png, mp4, ...) ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(TraceAttachmentUploadDetailsViewModel), Description = "An object containing the upload URL details.")]
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<IActionResult> GetTraceAttachmentUploadUrl(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/uploadurl/{fileName}")] HttpRequest req,
             [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerImageToLabel,
@@ -133,7 +135,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiParameter("traceId",In = ParameterLocation.Path, Description = "The Trace Id associated with this attachment")]
         [OpenApiParameter("fileName", In = ParameterLocation.Path, Description = "The name of the file uploaded. Used to determine attachment type (jpeg, png, mp4, ...) ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The file has been successfully uploaded.")]
-
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<IActionResult> UploadTraceAttachment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
             [Blob("images2label", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerImageToLabel,
@@ -226,7 +228,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiOperation(operationId: nameof(UploadTrace), tags: new[] { OpenApiTraceCategory })]
         [OpenApiRequestBody(contentType: "application/json", bodyType: typeof(TraceViewModel))]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(TraceUploadResultViewModel), Description = "An object representing the uploaded trace.")]
-
+        [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<IActionResult> UploadTrace(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace")] HttpRequest req,
             [Blob("manual", FileAccess.Write, Connection = "TraceStorage")] BlobContainerClient blobContainerManual,
