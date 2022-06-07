@@ -19,6 +19,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.OpenApi.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System.Text;
 
 namespace Surfrider.PlasticOrigins.Backend.Mobile
 {
@@ -275,7 +276,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     DateTimeOffset.Now.AddMinutes(20)).AbsoluteUri;
             }
 
-            await traceAttachmentBlob.UploadAsync(body);
+            var bodyStream = new MemoryStream(Encoding.UTF8.GetBytes(body));
+
+            await traceAttachmentBlob.UploadAsync(bodyStream);
             await traceAttachmentBlob.SetHttpHeadersAsync(new BlobHttpHeaders() { ContentType = "application/json" });
             await traceAttachmentBlob.SetMetadataAsync(new Dictionary<string, string> { { "uid", accessTokenResult.User.Id } });
 
