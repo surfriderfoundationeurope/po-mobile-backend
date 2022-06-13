@@ -43,6 +43,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiParameter("traceId", In = ParameterLocation.Path, Description = "The Trace Id associated with this attachment")]
         [OpenApiParameter("fileName", In = ParameterLocation.Path, Description = "The name of the file uploaded. Used to determine attachment type (jpeg, png, mp4, ...) ")]
         [OpenApiResponseWithBody(statusCode: HttpStatusCode.OK, contentType: "application/json", bodyType: typeof(TraceAttachmentUploadDetailsViewModel), Description = "An object containing the upload URL details.")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "The trace ID is incorrect.")]
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<IActionResult> GetTraceAttachmentUploadUrl(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/uploadurl/{fileName}")] HttpRequest req,
@@ -82,7 +83,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     if (traceGoProIdJsonFile != null)
                         jsonStream = traceGoProIdJsonFile;
                     else
-                        return new UnauthorizedResult();
+                        return new NotFoundResult();
                 }
             }
             var trace = await new StreamReader(jsonStream).ReadToEndAsync();
@@ -136,6 +137,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
         [OpenApiParameter("traceId",In = ParameterLocation.Path, Description = "The Trace Id associated with this attachment")]
         [OpenApiParameter("fileName", In = ParameterLocation.Path, Description = "The name of the file uploaded. Used to determine attachment type (jpeg, png, mp4, ...) ")]
         [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.OK, Description = "The file has been successfully uploaded.")]
+        [OpenApiResponseWithoutBody(statusCode: HttpStatusCode.NotFound, Description = "The trace ID is incorrect.")]
         [OpenApiSecurity("bearer_auth", SecuritySchemeType.Http, Scheme = OpenApiSecuritySchemeType.Bearer, BearerFormat = "JWT")]
         public async Task<IActionResult> UploadTraceAttachment(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "trace/{traceId}/attachments/{fileName}")] HttpRequest req,
@@ -170,7 +172,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
                     if (traceGoProIdJsonFile != null)
                         jsonStream = traceGoProIdJsonFile;
                     else
-                        return new UnauthorizedResult();
+                        return new NotFoundResult();
                 }
             }
             var trace = await new StreamReader(jsonStream).ReadToEndAsync();
