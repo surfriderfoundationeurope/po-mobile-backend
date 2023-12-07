@@ -73,11 +73,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             user.AuthTokenExpiration = tokenValidityDate;
 
             // Send email
-            var emailValidationToken = GenerateUserToken(email, DateTime.UtcNow.AddHours(2), userId, true);
-            string originalEmailHtml = await File.ReadAllTextAsync(Path.Combine(BaseFunctionDirectory, "../Assets/mail-validateaccount.html"));
-            originalEmailHtml = originalEmailHtml.Replace("%%YES_LINK%%", $"{_functionBaseUrl}/validate/{emailValidationToken}");
-
-            await SendEmail(email, originalEmailHtml, string.Empty, "Validation de ton compte Plastic Origins");
+            // ⚠️ Temporary deactivation of email because of MailJet issue
+            // var emailValidationToken = GenerateUserToken(email, DateTime.UtcNow.AddHours(2), userId, true);
+            // string originalEmailHtml = await File.ReadAllTextAsync(Path.Combine(BaseFunctionDirectory, "../Assets/mail-validateaccount.html"));
+            // originalEmailHtml = originalEmailHtml.Replace("%%YES_LINK%%", $"{_functionBaseUrl}/validate/{emailValidationToken}");
+            // await SendEmail(email, originalEmailHtml, string.Empty, "Validation de ton compte Plastic Origins");
 
             //Contract.Ensures(user != null);
             return user;
