@@ -34,6 +34,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         private readonly string _jwtTokenKey;
         private readonly string _mailJetApiKey;
         private readonly string _mailjetApiSecret;
+        private readonly string _mailjetSenderEmail;
         private string _functionBaseUrl;
 
         // TODO This is a hack. We should have something like a "FilesystemService"
@@ -47,6 +48,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             _mailJetApiKey = configurationService.GetValue(ConfigurationServiceWellKnownKeys.MailjetApiKey);
             _mailjetApiSecret = configurationService.GetValue(ConfigurationServiceWellKnownKeys.MailjetApiSecret);
             _functionBaseUrl = configurationService.GetValue(ConfigurationServiceWellKnownKeys.BaseFunctionUrl);
+            _mailjetSenderEmail = configurationService.GetValue(ConfigurationServiceWellKnownKeys.MailjetSenderEmail);
         }
 
         public async Task<User> Register(string lastName, string firstName, string birthYear, string email,
@@ -203,7 +205,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                         {
                             "From",
                             new JObject {
-                                {"Email", "plasticorigins_api@surfrider.eu"},
+                                {"Email", _mailjetSenderEmail},
                                 {"Name", "Surfrider"}
                             }
                         }, {
