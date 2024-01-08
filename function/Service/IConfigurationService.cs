@@ -19,6 +19,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         public const string MailjetApiSecret = nameof(MailjetApiSecret);
         public const string BaseFunctionUrl = nameof(BaseFunctionUrl);
         public const string MailjetSenderEmail = nameof(MailjetSenderEmail);
+        public const string AzureAcsConnectionString = nameof(AzureAcsConnectionString);
     }
 
     public class EnvironmentConfigurationService : IConfigurationService

@@ -10,6 +10,8 @@ using Mailjet.Client.Resources;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Azure;
+using Azure.Communication.Email;
 
 [assembly: InternalsVisibleTo("Surfrider.PlasticOrigins.Backend.Mobile.Tests")]
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
@@ -35,6 +37,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         private readonly string _mailJetApiKey;
         private readonly string _mailjetApiSecret;
         private readonly string _mailjetSenderEmail;
+        private readonly string _azureAcsConnectionString;
         private string _functionBaseUrl;
 
         // TODO This is a hack. We should have something like a "FilesystemService"
@@ -49,6 +52,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             _mailjetApiSecret = configurationService.GetValue(ConfigurationServiceWellKnownKeys.MailjetApiSecret);
             _functionBaseUrl = configurationService.GetValue(ConfigurationServiceWellKnownKeys.BaseFunctionUrl);
             _mailjetSenderEmail = configurationService.GetValue(ConfigurationServiceWellKnownKeys.MailjetSenderEmail);
+            _azureAcsConnectionString = configurationService.GetValue(ConfigurationServiceWellKnownKeys.AzureAcsConnectionString);
         }
 
         public async Task<User> Register(string lastName, string firstName, string birthYear, string email,
@@ -186,6 +190,13 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         private async Task SendEmail(string to, string content, string textContent, string subject)
         {
 
+            // If Azure ACS is configured, use this instead of Mailjet
+            if(!string.IsNullOrEmpty(_azureAcsConnectionString))
+            {
+                await SendEmailAzureAcs(to, content, textContent, subject);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(_mailJetApiKey) || string.IsNullOrWhiteSpace(_mailjetApiSecret))
             {
                 Console.WriteLine("No email configured, skipping email sending.");
@@ -242,6 +253,17 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 throw new ApplicationException("Unable to send email");
         }
 
+        private async Task SendEmailAzureAcs(string to, string content, string textContent, string subject)
+        {
+            EmailClient emailClient = new EmailClient(_azureAcsConnectionString);
+            EmailSendOperation emailSendOperation = await emailClient.SendAsync(
+                    Azure.WaitUntil.Started,
+                    _mailjetSenderEmail,
+                    to,
+                    subject,
+                    content);
+        }
+        
         internal static string InternalGenerateUserToken(string email, DateTime validityDate, string userId, string signatureKey, bool isValidationEmail)
         {
             var payload = new JwtTokenContent()
