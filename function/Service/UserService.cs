@@ -197,7 +197,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
         private async Task SendEmail(string to, string content, string textContent, string subject)
         {
-            _log.LogInformation("Sending email: {subject}. Destination: {to}", subject, to.Take(4));
+            _log.LogInformation($"Sending email: {subject}. Destination: {to.Substring(0, 3)}");
             // If Azure ACS is configured, use this instead of Mailjet
             if(!string.IsNullOrEmpty(_azureAcsConnectionString))
             {
