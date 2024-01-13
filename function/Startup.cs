@@ -25,6 +25,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             builder.Services.AddSingleton<IImageService, ImageService>();
             builder.Services.AddSingleton<TraceStore, TraceStore>();
             builder.Services.AddSingleton<TraceService, TraceService>();
+            // Add Logger
+            builder.Services.AddLogging();
         }
 
         public void ConfigureServices(IServiceCollection services)

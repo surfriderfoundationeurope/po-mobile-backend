@@ -4,5 +4,6 @@
     "http": {
       "routePrefix": ""
     }
-  }
+  },
+  "logLevel": { "Surfrider.PlasticOrigins.Backend.Mobile.Service.UserService": "Information" }
 }

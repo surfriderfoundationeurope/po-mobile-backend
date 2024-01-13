@@ -47,7 +47,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         // TODO This is a hack. We should have something like a "FilesystemService"
         public string BaseFunctionDirectory { get; set; }
 
-        public UserService(IUserStore userStore, IConfigurationService configurationService, ILogger log)
+        public UserService(IUserStore userStore, IConfigurationService configurationService, ILogger<UserService> log)
         {
             _log = log;
             _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
@@ -197,7 +197,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
         private async Task SendEmail(string to, string content, string textContent, string subject)
         {
-            _log.LogInformation($"Sending email: {subject}. Destination: {to.Substring(0, 3)}");
+            _log.LogInformation($"Sending email: {subject}. Destination: {to?.Substring(0, 3)}");
             // If Azure ACS is configured, use this instead of Mailjet
             if(!string.IsNullOrEmpty(_azureAcsConnectionString))
             {
