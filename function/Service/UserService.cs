@@ -12,6 +12,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Azure;
 using Azure.Communication.Email;
+using Microsoft.Extensions.Logging;
+using System.Linq;
 
 [assembly: InternalsVisibleTo("Surfrider.PlasticOrigins.Backend.Mobile.Tests")]
 namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
@@ -31,6 +33,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
     internal class UserService : IUserService
     {
+        private readonly ILogger _log;
+
         private readonly IUserStore _userStore;
         private readonly int _defaultTokenValidityPeriod;
         private readonly string _jwtTokenKey;
@@ -43,8 +47,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
         // TODO This is a hack. We should have something like a "FilesystemService"
         public string BaseFunctionDirectory { get; set; }
 
-        public UserService(IUserStore userStore, IConfigurationService configurationService)
+        public UserService(IUserStore userStore, IConfigurationService configurationService, ILogger log)
         {
+            _log = log;
             _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
             _defaultTokenValidityPeriod = 60 * 48;
             _jwtTokenKey = configurationService.GetValue(ConfigurationServiceWellKnownKeys.JwtTokenSignatureKey);
@@ -189,10 +194,11 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
 
         private async Task SendEmail(string to, string content, string textContent, string subject)
         {
-
+            _log.LogInformation("Sending email: {subject}. Destination: {to}", subject, to.Take(4));
             // If Azure ACS is configured, use this instead of Mailjet
             if(!string.IsNullOrEmpty(_azureAcsConnectionString))
             {
+                _log.LogInformation(" - Sending with Azure ACS");
                 await SendEmailAzureAcs(to, content, textContent, subject);
                 return;
             }
@@ -203,6 +209,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                 return;
             }
 
+            _log.LogInformation(" - Sending with Mailjet");
             MailjetClient client = new MailjetClient(_mailJetApiKey,_mailjetApiSecret)
             {
                 Version = ApiVersion.V3_1,
@@ -262,6 +269,8 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
                     to,
                     subject,
                     content);
+
+            _log.LogInformation(" - Mail Sent. OperationID: {}", emailSendOperation.Id);
         }
         
         internal static string InternalGenerateUserToken(string email, DateTime validityDate, string userId, string signatureKey, bool isValidationEmail)
