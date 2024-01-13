@@ -165,7 +165,10 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile.Service
             //var user = await _userStore.GetFromId("06566a9d-e0f4-414d-849a-16f11888fc42");
             var user = await _userStore.GetFromEmail(email);
             if (user == null)
+            {
+                _log.LogInformation("#auth #reset User Not Found");
                 return;
+            }
 
             var newPassword = GetRandomPassword();
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);

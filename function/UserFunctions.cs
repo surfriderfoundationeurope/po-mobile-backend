@@ -188,7 +188,7 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             ExecutionContext context,
             ILogger log)
         {
-            log.LogInformation($"#auth #reset");
+            log.LogInformation($"#auth #reset View");
             string filePath = Path.Combine(context.FunctionDirectory, "../Templates/ResetPasswordForm.html");
 
             var response = new HttpResponseMessage(HttpStatusCode.OK);
@@ -215,9 +215,9 @@ namespace Surfrider.PlasticOrigins.Backend.Mobile
             {
                 await _userService.ResetPassword(col["user_email"]);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                
+                log.LogError(ex, "Error while resetting password");
             }
 
             return (ActionResult)new OkObjectResult("Si votre adresse email est bien enregistrée, vous allez recevoir un email avec votre nouveau mot de passe.");
